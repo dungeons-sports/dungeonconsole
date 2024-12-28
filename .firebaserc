@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "dungeon-4a60f"
+  },
+  "targets": {
+    "dungeon-4a60f": {
+      "hosting": {
+        "console": [
+          "dungeon-console"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
