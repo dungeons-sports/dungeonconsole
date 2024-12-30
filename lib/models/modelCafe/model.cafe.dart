@@ -15,6 +15,7 @@ class Cafe extends Equatable {
   final String state;
 
   // Step Two
+  @JsonKey(toJson: _consoleListToJson, fromJson: _consoleListFromJson)
   final List<Console> consoleType;
   final bool isGamingChair;
   final bool isWashroom;
@@ -29,6 +30,9 @@ class Cafe extends Equatable {
   final String closeTimeUTC;
   final String topGames;
   final String googleMapsLink;
+
+  final int registerStep;
+  final bool isVerified;
 
   final String tsCreated;
   final String tsUpdated;
@@ -52,6 +56,8 @@ class Cafe extends Equatable {
     required this.isSmokingAllowed,
     required this.openTimeUTC,
     required this.closeTimeUTC,
+    required this.registerStep,
+    required this.isVerified,
     required this.tsCreated,
     required this.tsUpdated,
   });
@@ -79,6 +85,8 @@ class Cafe extends Equatable {
         isSmokingAllowed = false,
         openTimeUTC = '',
         closeTimeUTC = '',
+        registerStep = 0,
+        isVerified = false,
         tsCreated = '',
         tsUpdated = '';
 
@@ -102,6 +110,8 @@ class Cafe extends Equatable {
     String? openTimeUTC,
     String? closeTimeUTC,
     bool? allowedMembership,
+    int? registerStep,
+    bool? isVerified,
     String? tsCreated,
     String? tsUpdated,
   }) {
@@ -124,10 +134,20 @@ class Cafe extends Equatable {
       isSmokingAllowed: isSmokingAllowed ?? this.isSmokingAllowed,
       openTimeUTC: openTimeUTC ?? this.openTimeUTC,
       closeTimeUTC: closeTimeUTC ?? this.closeTimeUTC,
+      registerStep: registerStep ?? this.registerStep,
+      isVerified: isVerified ?? this.isVerified,
       tsCreated: tsCreated ?? this.tsCreated,
       tsUpdated: tsUpdated ?? this.tsUpdated,
     );
   }
+
+  // Helper methods for consoleType serialization/deserialization
+  static List<Map<String, dynamic>> _consoleListToJson(
+          List<Console> consoles) =>
+      consoles.map((console) => console.toJson()).toList();
+
+  static List<Console> _consoleListFromJson(List<dynamic> json) =>
+      json.map((e) => Console.fromJson(e as Map<String, dynamic>)).toList();
 
   @override
   List<Object?> get props => [

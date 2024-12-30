@@ -1,17 +1,25 @@
+import 'package:dungeonconsole/main.dart';
+import 'package:dungeonconsole/models/modelUser/model.user.dart';
+import 'package:dungeonconsole/services/service.firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class AuthenticationService {
-  Future<User?> signUpWithEmailPassword(String email, String password);
-  Future<User?> loginWithEmailPassword(String email, String password);
-  Future<User?> signUpWithGoogle();
-  Future<User?> loginWithGoogle();
+  Future<AppUser?> signUpWithEmailPassword(
+    String email,
+    String password,
+    bool isPartner,
+  );
+  Future<AppUser?> loginWithEmailPassword(String email, String password);
+  Future<AppUser?> signUpWithGoogle(bool isPartner);
+  Future<AppUser?> loginWithGoogle();
   Future<void> logout();
+  Future<AppUser?> getCurrentUser();
 }
 
 class AuthenticationServiceImpl extends AuthenticationService {
   @override
-  Future<User?> signUpWithEmailPassword(String email, String password) async {
+  Future<AppUser?> signUpWithEmailPassword(
+      String email, String password, bool isPartner) async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     try {
       UserCredential userCredential =
@@ -19,7 +27,11 @@ class AuthenticationServiceImpl extends AuthenticationService {
         email: email,
         password: password,
       );
-      return userCredential.user;
+      AppUser? appUser = await locator.get<FirestoreService>().createUserRecord(
+          userCredential.user!,
+          isCafe: isPartner,
+          isPlayer: !isPartner);
+      return appUser;
     } catch (e) {
       print(e);
       return null;
@@ -27,7 +39,7 @@ class AuthenticationServiceImpl extends AuthenticationService {
   }
 
   @override
-  Future<User?> loginWithEmailPassword(String email, String password) async {
+  Future<AppUser?> loginWithEmailPassword(String email, String password) async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     try {
       UserCredential userCredential =
@@ -35,7 +47,10 @@ class AuthenticationServiceImpl extends AuthenticationService {
         email: email,
         password: password,
       );
-      return userCredential.user;
+      AppUser? appUser = await locator
+          .get<FirestoreService>()
+          .getUserRecord(userCredential.user!.uid);
+      return appUser;
     } catch (e) {
       print(e);
       return null;
@@ -43,20 +58,16 @@ class AuthenticationServiceImpl extends AuthenticationService {
   }
 
   @override
-  Future<User?> signUpWithGoogle() async {
+  Future<AppUser?> signUpWithGoogle(bool isPartner) async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    final GoogleSignIn googleSignIn = GoogleSignIn();
     try {
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      UserCredential userCredential =
-          await firebaseAuth.signInWithCredential(credential);
-      return userCredential.user;
+      final userCredential =
+          await firebaseAuth.signInWithPopup(GoogleAuthProvider());
+      final User user = userCredential.user!;
+      final AppUser? appuser = await locator
+          .get<FirestoreService>()
+          .createUserRecord(user, isCafe: isPartner, isPlayer: !isPartner);
+      return appuser;
     } catch (e) {
       print(e);
       return null;
@@ -64,19 +75,45 @@ class AuthenticationServiceImpl extends AuthenticationService {
   }
 
   @override
-  Future<User?> loginWithGoogle() async {
-    return signUpWithGoogle();
+  Future<AppUser?> loginWithGoogle() async {
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    try {
+      final userCredential =
+          await firebaseAuth.signInWithPopup(GoogleAuthProvider());
+      final User user = userCredential.user!;
+      final AppUser? appuser =
+          await locator.get<FirestoreService>().getUserRecord(user.uid);
+      return appuser;
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   @override
   Future<void> logout() async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    final GoogleSignIn googleSignIn = GoogleSignIn();
     try {
       await firebaseAuth.signOut();
-      await googleSignIn.signOut();
+      // await googleSignIn.signOut();
     } catch (e) {
       print(e);
+    }
+  }
+
+  @override
+  Future<AppUser?> getCurrentUser() async {
+    try {
+      final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+      String? uid = firebaseAuth.currentUser?.uid ?? "";
+      if (uid != "") {
+        return await locator.get<FirestoreService>().getUserRecord(uid);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print(e);
+      return null;
     }
   }
 }

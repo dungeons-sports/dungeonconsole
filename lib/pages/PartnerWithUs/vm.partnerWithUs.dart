@@ -1,8 +1,15 @@
+import 'package:dungeonconsole/helpers/helper.docId.dart';
+import 'package:dungeonconsole/main.dart';
 import 'package:dungeonconsole/models/modelCafe/model.cafe.dart';
 import 'package:dungeonconsole/models/modelConsole/model.console.dart';
+import 'package:dungeonconsole/models/modelUser/model.user.dart';
+import 'package:dungeonconsole/services/service.authentication.dart';
+import 'package:dungeonconsole/services/service.firestore.dart';
 import 'package:flutter/material.dart';
 
 class VMPartnerWithUs extends ChangeNotifier {
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
   Cafe cafeDetails = const Cafe.empty();
 
   final TextEditingController cafeNameController = TextEditingController();
@@ -306,93 +313,165 @@ class VMPartnerWithUs extends ChangeNotifier {
     notifyListeners();
   }
 
-  void submit() {
+  Future<bool> checkIfLoggedIn() async {
+    AppUser? user = await locator.get<AuthenticationService>().getCurrentUser();
+    if(user != null){
+      if(user.cafeId != null && user.cafeId != ""){
+        cafeDetails = await locator.get<FirestoreService>().getCafeRecord(user.cafeId!);
+
+        _currentStep = cafeDetails.registerStep;
+        notifyListeners();
+
+      }
+    }
+    return !(user == null);
+  }
+
+  Future<void> submit() async {
+    if (_isLoading) {
+      return;
+    }
+
     if (_city.isEmpty || _state.isEmpty || _consoles.isEmpty) {
       // Handle validation error
       return;
     }
 
-    // ignore: unused_local_variable
-    cafeDetails = cafeDetails.copyWith(
-      id: 'TBD',
-      ownerName: ownerNameController.text,
-      ownerPhone: ownerPhoneController.text,
-      cafeName: cafeNameController.text,
-      city: _city,
-      state: _state,
-      consoleType: _consoles,
-      tsCreated: DateTime.now().toUtc().toString(),
-      tsUpdated: DateTime.now().toUtc().toString(),
-    );
-  }
+    try {
+      _isLoading = true;
+      notifyListeners();
 
-  void submitInventoryInfo() {
-    for (var i = 0; i < _consoles.length; i++) {
-      switch (_consoles[i].type) {
-        case ConsoleType.pc:
-          _consoles[i] = _consoles[i].copyWith(
-            count: int.tryParse(pcCountController.text) ?? 0,
-            cost: double.tryParse(pcAmountController.text) ?? 0.0,
-          );
-          break;
-        case ConsoleType.ps:
-          _consoles[i] = _consoles[i].copyWith(
-            count: int.tryParse(psCountController.text) ?? 0,
-            cost: double.tryParse(psAmountController.text) ?? 0.0,
-          );
-          break;
-        case ConsoleType.vr:
-          _consoles[i] = _consoles[i].copyWith(
-            count: int.tryParse(vrCountController.text) ?? 0,
-            cost: double.tryParse(vrAmountController.text) ?? 0.0,
-          );
-          break;
-        case ConsoleType.xbox:
-          _consoles[i] = _consoles[i].copyWith(
-            count: int.tryParse(xboxCountController.text) ?? 0,
-            cost: double.tryParse(xboxAmountController.text) ?? 0.0,
-          );
-          break;
-        case ConsoleType.streaming:
-          _consoles[i] = _consoles[i].copyWith(
-            count: int.tryParse(streamingCountController.text) ?? 0,
-            cost: double.tryParse(streamingAmountController.text) ?? 0.0,
-          );
-          break;
-        case ConsoleType.simRacing:
-          _consoles[i] = _consoles[i].copyWith(
-            count: int.tryParse(simRacingCountController.text) ?? 0,
-            cost: double.tryParse(simRacingAmountController.text) ?? 0.0,
-          );
-          break;
+      String id = StringHelper.generateDocId();
+
+      // ignore: unused_local_variable
+      cafeDetails = cafeDetails.copyWith(
+        id: id,
+        ownerName: ownerNameController.text,
+        ownerPhone: ownerPhoneController.text,
+        cafeName: cafeNameController.text,
+        city: _city,
+        state: _state,
+        consoleType: _consoles,
+        registerStep: 1,
+        tsCreated: DateTime.now().toUtc().toString(),
+        tsUpdated: DateTime.now().toUtc().toString(),
+      );
+
+      AppUser? user =
+          await locator.get<AuthenticationService>().getCurrentUser();
+
+      if (user != null) {
+        await locator
+            .get<FirestoreService>()
+            .createCafeRecord(cafeDetails, user.id);
       }
+
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      print(e);
     }
-    notifyListeners();
   }
 
-  void submitFinal() {
-    cafeDetails = cafeDetails.copyWith(
-      id: 'TBD',
-      ownerName: ownerNameController.text,
-      ownerPhone: ownerPhoneController.text,
-      cafeName: cafeNameController.text,
-      city: _city,
-      state: _state,
-      consoleType: _consoles,
-      tsCreated: DateTime.now().toUtc().toString(),
-      tsUpdated: DateTime.now().toUtc().toString(),
-      openTimeUTC: _openTimeUTC,
-      closeTimeUTC: _closeTimeUTC,
-      isGamingChair: _isGamingChair,
-      isWashroom: _isWashroom,
-      isAC: _isAC,
-      isParking: _isParking,
-      isFoodAllowed: _isFoodAllowed,
-      isAlwaysOpen: _isAlwaysOpen,
-      isSmokingAllowed: _isSmokingAllowed,
-      topGames: topGameController.text,
-      googleMapsLink: googleMapsController.text,
-    );
+  Future<void> submitInventoryInfo() async {
+    if (_isLoading) {
+      return;
+    }
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      List<Console> consoleDetails = [];
+
+      for (var i = 0; i < _consoles.length; i++) {
+        switch (_consoles[i].type) {
+          case ConsoleType.pc:
+            consoleDetails.add(_consoles[i].copyWith(
+              count: int.tryParse(pcCountController.text) ?? 0,
+              cost: double.tryParse(pcAmountController.text) ?? 0.0,
+            ));
+            break;
+          case ConsoleType.ps:
+            consoleDetails.add(_consoles[i].copyWith(
+              count: int.tryParse(psCountController.text) ?? 0,
+              cost: double.tryParse(psAmountController.text) ?? 0.0,
+            ));
+            break;
+          case ConsoleType.vr:
+            consoleDetails.add(_consoles[i].copyWith(
+              count: int.tryParse(vrCountController.text) ?? 0,
+              cost: double.tryParse(vrAmountController.text) ?? 0.0,
+            ));
+            break;
+          case ConsoleType.xbox:
+            consoleDetails.add(_consoles[i] = _consoles[i].copyWith(
+              count: int.tryParse(xboxCountController.text) ?? 0,
+              cost: double.tryParse(xboxAmountController.text) ?? 0.0,
+            ));
+            break;
+          case ConsoleType.streaming:
+            consoleDetails.add(_consoles[i] = _consoles[i].copyWith(
+              count: int.tryParse(streamingCountController.text) ?? 0,
+              cost: double.tryParse(streamingAmountController.text) ?? 0.0,
+            ));
+            break;
+          case ConsoleType.simRacing:
+            consoleDetails.add(_consoles[i] = _consoles[i].copyWith(
+              count: int.tryParse(simRacingCountController.text) ?? 0,
+              cost: double.tryParse(simRacingAmountController.text) ?? 0.0,
+            ));
+            break;
+        }
+      }
+
+      Cafe updatedCafeDetails =
+          cafeDetails.copyWith(consoleType: consoleDetails,tsUpdated: DateTime.now().toUtc().toString(),  registerStep: 2,);
+      await locator
+          .get<FirestoreService>()
+          .updateCafeRecord(updatedCafeDetails);
+
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void submitFinal() async {
+    if (_isLoading) {
+      return;
+    }
+
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      Cafe updatedCafeDetails = cafeDetails.copyWith(
+        tsUpdated: DateTime.now().toUtc().toString(),
+        openTimeUTC: _openTimeUTC,
+        closeTimeUTC: _closeTimeUTC,
+        isGamingChair: _isGamingChair,
+        isWashroom: _isWashroom,
+        isAC: _isAC,
+        isParking: _isParking,
+        isFoodAllowed: _isFoodAllowed,
+        isAlwaysOpen: _isAlwaysOpen,
+        isSmokingAllowed: _isSmokingAllowed,
+        topGames: topGameController.text,
+        registerStep: -1,
+        googleMapsLink: googleMapsController.text,
+      );
+
+      await locator
+          .get<FirestoreService>()
+          .updateCafeRecord(updatedCafeDetails);
+
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+
     notifyListeners();
   }
 

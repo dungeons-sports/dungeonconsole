@@ -84,6 +84,7 @@ class NavigationRoutes {
         path: AppRoutes.partnerWithUs.path,
         name: AppRoutes.partnerWithUs.name,
         builder: (BuildContext context, GoRouterState state) {
+         
           return const PartnerWithUsPage();
         },
       ),

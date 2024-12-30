@@ -19,15 +19,37 @@ class _ConnectWithUsPageState extends State<ConnectWithUsPage> {
     size = MediaQuery.of(context).size;
     device = BreakpointHelper.device(context);
     return Scaffold(
-      body: Padding(
-          padding: PaddingRatioHelper.getDisplayPadding(size),
+      body: size.width < 600 || size.height < 500
+          ? Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/cat.png',
+                    width: 300,
+                    height: 300,
+                  ),
+                  const SizedBox(height: 20),
+                  Center(
+                      child: Text(
+                    "Managing is not supported on Mobile Devices\nSwitch to Desktop",
+                    style: GoogleFonts.pixelifySans(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ))
+                ],
+              ))
+          : Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: size.width > 600 ? 48.0 : 8.0,
+              vertical: size.width > 600 ? 24 : 8.0),
           child: Row(
-            mainAxisAlignment: device == Device.desktop
+            mainAxisAlignment: size.width > 600
                 ? MainAxisAlignment.start
                 : MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if (device == Device.desktop)
+              if (size.width > 600)
                 SizedBox(
                   height: size.height,
                   child: Transform.flip(
@@ -39,14 +61,13 @@ class _ConnectWithUsPageState extends State<ConnectWithUsPage> {
                     ),
                   ),
                 ),
-              if (device == Device.desktop) const Spacer(),
+              if (size.width > 600) const Spacer(),
               StackedContainer(
-                  width: device == Device.desktop
-                      ? size.width * 0.5
-                      : size.width * 0.8,
-                  height: device == Device.desktop? size.height * 0.8: size.height,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 18.0, vertical: 28.0),
+                  width: size.width > 600 ? size.width * 0.5 : size.width * 0.8,
+                  height: size.width > 600 ? size.height * 0.8 : size.height,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: size.width > 600 ? 18.0 : 8.0,
+                      vertical: size.width > 600 ? 28.0 : 8.0),
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,

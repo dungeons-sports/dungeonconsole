@@ -1,10 +1,11 @@
 import 'package:dungeonconsole/forms/form.registerStepOne.dart';
 import 'package:dungeonconsole/forms/form.registerStepThree.dart';
 import 'package:dungeonconsole/forms/form.registerStepTwo.dart';
-import 'package:dungeonconsole/helpers/helper.sizes.dart';
+import 'package:dungeonconsole/helpers/helper.navigationRoutes.dart';
 import 'package:dungeonconsole/pages/PartnerWithUs/vm.partnerWithUs.dart';
 import 'package:dungeonconsole/widgets/widget.stackContainer.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -14,14 +15,34 @@ class PartnerWithUsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    Device device = BreakpointHelper.device(context);
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 48.0, vertical: 24),
+      body: size.width < 600 || size.height < 500
+          ? Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/cat.png',
+                    width: 300,
+                    height: 300,
+                  ),
+                  const SizedBox(height: 20),
+                  Center(
+                      child: Text(
+                    "Managing is not supported on Mobile Devices\nSwitch to Desktop",
+                    style: GoogleFonts.pixelifySans(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ))
+                ],
+              ))
+          : Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: size.width > 600 ? 48.0 : 12.0, vertical: 24),
         child: Center(
           child: Row(
             children: [
-              if (device == Device.desktop)
+              if (size.width > 600)
                 SizedBox(
                   height: size.height,
                   child: Transform.flip(
@@ -33,16 +54,29 @@ class PartnerWithUsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (device == Device.desktop) const Spacer(),
+              if (size.width > 600) const Spacer(),
               Consumer<VMPartnerWithUs>(
                 builder: (context, vm, index) {
+                  vm.checkIfLoggedIn().then((isLoggedIn) {
+                    if (!isLoggedIn) {
+                      GoRouter.of(context)
+                          .pushReplacement(AppRoutes.loginPage.path);
+                    }
+
+                    if(vm.currentStep == -1){
+                      GoRouter.of(context)
+                          .pushReplacement(AppRoutes.dashboardPage.path);
+                    }
+                  });
+
                   return StackedContainer(
-                      width: device == Device.desktop
+                      width: size.width > 600
                           ? size.width * 0.6
-                          : size.width * 0.8,
+                          : size.width * 0.9,
                       height: size.height,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 18.0, vertical: 28.0),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: size.width > 600 ? 18.0 : 8.0,
+                          vertical: size.width > 600 ? 28.0 : 8.0),
                       child: SizedBox(
                         height: size.height,
                         child: Stepper(
@@ -66,7 +100,7 @@ class PartnerWithUsPage extends StatelessWidget {
                             Step(
                                 title: const Text('Additional Details'),
                                 content: SizedBox(
-                                  width: size.width*0.6,
+                                  width: size.width * 0.6,
                                   child: RegisterStepThree(vm: vm),
                                 ))
                           ],
@@ -80,15 +114,16 @@ class PartnerWithUsPage extends StatelessWidget {
                                     if (vm.currentStep == 0) {
                                       vm.submit();
                                     }
-                                
+
                                     if (vm.currentStep == 1) {
                                       vm.submitInventoryInfo();
                                     }
 
                                     if (vm.currentStep == 2) {
                                       vm.submitFinal();
+                                      GoRouter.of(context).pushReplacement(AppRoutes.dashboardPage.path);
                                     }
-                                
+
                                     vm.nextStep();
                                   },
                                   child: StackedContainer(
@@ -97,14 +132,25 @@ class PartnerWithUsPage extends StatelessWidget {
                                     containerSpacing: 4.0,
                                     fillColor: const Color.fromARGB(
                                         255, 237, 132, 255),
-                                    child: Center(
-                                      child: Text(
-                                        vm.currentStep<2? "Next" : "Finish",
-                                        style: GoogleFonts.roboto(
-                                            fontSize: 18.0,
-                                            color: Colors.black),
-                                      ),
-                                    ),
+                                    child: !vm.isLoading
+                                        ? Center(
+                                            child: Text(
+                                              vm.currentStep < 2
+                                                  ? "Next"
+                                                  : "Finish",
+                                              style: GoogleFonts.roboto(
+                                                  fontSize: 18.0,
+                                                  color: Colors.black),
+                                            ),
+                                          )
+                                        : const Center(
+                                            child: CircularProgressIndicator
+                                                .adaptive(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation(
+                                                      Colors.black),
+                                            ),
+                                          ),
                                   ),
                                 ),
                               ),

@@ -1,8 +1,9 @@
 import 'package:dungeonconsole/helpers/helper.navigationRoutes.dart';
+import 'package:dungeonconsole/pages/Authentication/Login/vm.login.dart';
+import 'package:dungeonconsole/pages/Authentication/SignUp/vm.signup.dart';
 import 'package:dungeonconsole/pages/PartnerWithUs/vm.partnerWithUs.dart';
 import 'package:dungeonconsole/services/service.authentication.dart';
 import 'package:dungeonconsole/services/service.firestore.dart';
-import 'package:dungeonconsole/services/service.navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,6 @@ import 'firebase_options.dart';
 final locator = GetIt.asNewInstance();
 
 void setupServices() {
-  locator.registerSingleton<NavigationService>(NavigationServiceImpl());
   locator.registerSingleton<AuthenticationService>(AuthenticationServiceImpl());
   locator.registerSingleton<FirestoreService>(FirestoreServiceImpl());
 }
@@ -33,6 +33,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => VMPartnerWithUs()),
+        ChangeNotifierProvider(create: (_) => VMSignup()),
+        ChangeNotifierProvider(create: (_) => VMLogin()),
       ],
       child: const MyApp(),
     ),

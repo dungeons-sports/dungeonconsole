@@ -15,9 +15,7 @@ Cafe _$CafeFromJson(Map<String, dynamic> json) => Cafe(
       state: json['state'] as String,
       googleMapsLink: json['googleMapsLink'] as String,
       topGames: json['topGames'] as String,
-      consoleType: (json['consoleType'] as List<dynamic>)
-          .map((e) => Console.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      consoleType: Cafe._consoleListFromJson(json['consoleType'] as List),
       isGamingChair: json['isGamingChair'] as bool,
       isWashroom: json['isWashroom'] as bool,
       isAC: json['isAC'] as bool,
@@ -27,6 +25,8 @@ Cafe _$CafeFromJson(Map<String, dynamic> json) => Cafe(
       isSmokingAllowed: json['isSmokingAllowed'] as bool,
       openTimeUTC: json['openTimeUTC'] as String,
       closeTimeUTC: json['closeTimeUTC'] as String,
+      registerStep: (json['registerStep'] as num).toInt(),
+      isVerified: json['isVerified'] as bool,
       tsCreated: json['tsCreated'] as String,
       tsUpdated: json['tsUpdated'] as String,
     );
@@ -38,7 +38,7 @@ Map<String, dynamic> _$CafeToJson(Cafe instance) => <String, dynamic>{
       'cafeName': instance.cafeName,
       'city': instance.city,
       'state': instance.state,
-      'consoleType': instance.consoleType,
+      'consoleType': Cafe._consoleListToJson(instance.consoleType),
       'isGamingChair': instance.isGamingChair,
       'isWashroom': instance.isWashroom,
       'isAC': instance.isAC,
@@ -50,6 +50,8 @@ Map<String, dynamic> _$CafeToJson(Cafe instance) => <String, dynamic>{
       'closeTimeUTC': instance.closeTimeUTC,
       'topGames': instance.topGames,
       'googleMapsLink': instance.googleMapsLink,
+      'registerStep': instance.registerStep,
+      'isVerified': instance.isVerified,
       'tsCreated': instance.tsCreated,
       'tsUpdated': instance.tsUpdated,
     };
