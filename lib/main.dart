@@ -1,18 +1,42 @@
 import 'package:dungeonconsole/helpers/helper.navigationRoutes.dart';
+import 'package:dungeonconsole/pages/PartnerWithUs/vm.partnerWithUs.dart';
+import 'package:dungeonconsole/services/service.authentication.dart';
+import 'package:dungeonconsole/services/service.firestore.dart';
+import 'package:dungeonconsole/services/service.navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 final locator = GetIt.asNewInstance();
 
 void setupServices() {
-  // Register Services in Singleton.
+  locator.registerSingleton<NavigationService>(NavigationServiceImpl());
+  locator.registerSingleton<AuthenticationService>(AuthenticationServiceImpl());
+  locator.registerSingleton<FirestoreService>(FirestoreServiceImpl());
 }
 
-void main() {
+void main() async {
   usePathUrlStrategy();
-  runApp(const MyApp());
+  setupServices();
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => VMPartnerWithUs()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

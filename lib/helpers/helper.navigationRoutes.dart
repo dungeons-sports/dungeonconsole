@@ -1,11 +1,14 @@
+import 'package:dungeonconsole/pages/Authentication/SignUp/page.signup.dart';
 import 'package:dungeonconsole/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 enum AppRoutes {
   connectWithUsPage,
-  authenticationPage,
+  loginPage,
+  signupPage,
   dashboardPage,
+  partnerWithUs,
 }
 
 extension AppRouteExtn on AppRoutes {
@@ -13,10 +16,14 @@ extension AppRouteExtn on AppRoutes {
     switch (this) {
       case AppRoutes.connectWithUsPage:
         return '/connect';
-      case AppRoutes.authenticationPage:
-        return '/';
+      case AppRoutes.loginPage:
+        return '/login';
+      case AppRoutes.signupPage:
+        return '/signup';
       case AppRoutes.dashboardPage:
         return '/dashboard';
+      case AppRoutes.partnerWithUs:
+        return '/register';
       default:
         return '/unknown';
     }
@@ -26,10 +33,14 @@ extension AppRouteExtn on AppRoutes {
     switch (this) {
       case AppRoutes.connectWithUsPage:
         return 'connectWithUsPage';
-      case AppRoutes.authenticationPage:
-        return 'authenticationPage';
+      case AppRoutes.loginPage:
+        return 'loginPage';
+      case AppRoutes.signupPage:
+        return 'signupPage';
       case AppRoutes.dashboardPage:
         return 'dashboardPage';
+      case AppRoutes.partnerWithUs:
+        return 'partnerWithUsPage';
       default:
         return 'unknown';
     }
@@ -38,7 +49,7 @@ extension AppRouteExtn on AppRoutes {
 
 class NavigationRoutes {
   static final routes = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/login',
     routes: <RouteBase>[
       GoRoute(
         path: AppRoutes.connectWithUsPage.path,
@@ -48,10 +59,18 @@ class NavigationRoutes {
         },
       ),
       GoRoute(
-        path: AppRoutes.authenticationPage.path,
-        name: AppRoutes.authenticationPage.name,
+        path: AppRoutes.loginPage.path,
+        name: AppRoutes.loginPage.name,
         builder: (BuildContext context, GoRouterState state) {
-          return const AuthenticationPage();
+          return const LoginPage();
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.signupPage.path,
+        name: AppRoutes.signupPage.name,
+        builder: (BuildContext context, GoRouterState state) {
+          final isPartner = state.uri.queryParameters['isPartner'] == null? false : true;
+          return SignupPage(isPartner: isPartner);
         },
       ),
       GoRoute(
@@ -59,6 +78,13 @@ class NavigationRoutes {
         name: AppRoutes.dashboardPage.name,
         builder: (BuildContext context, GoRouterState state) {
           return const DashboardPage();
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.partnerWithUs.path,
+        name: AppRoutes.partnerWithUs.name,
+        builder: (BuildContext context, GoRouterState state) {
+          return const PartnerWithUsPage();
         },
       ),
       GoRoute(

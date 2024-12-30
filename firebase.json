@@ -10,9 +10,23 @@
     "frameworksBackend": {
       "region": "us-east1"
     },
-    "rewrites": [{
-      "source": "**",
-      "destination": "/index.html"
-    }]
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "flutter": {
+    "platforms": {
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "dungeon-4a60f",
+          "configurations": {
+            "web": "1:473940145936:web:47191603cda85a04ba1795"
+          }
+        }
+      }
+    }
   }
 }

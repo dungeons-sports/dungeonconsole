@@ -1,16 +1,20 @@
+import 'package:dungeonconsole/helpers/helper.navigationRoutes.dart';
 import 'package:dungeonconsole/helpers/helper.sizes.dart';
+import 'package:dungeonconsole/main.dart';
+import 'package:dungeonconsole/services/service.navigation.dart';
+import 'package:dungeonconsole/widgets/widget.borderTextField.dart';
 import 'package:dungeonconsole/widgets/widget.stackContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AuthenticationPage extends StatefulWidget {
-  const AuthenticationPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<AuthenticationPage> createState() => _AuthenticationPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _AuthenticationPageState extends State<AuthenticationPage> {
+class _LoginPageState extends State<LoginPage> {
   late Size size;
   late Device device;
   @override
@@ -43,8 +47,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 width: device == Device.desktop
                     ? size.width * 0.5
                     : size.width * 0.8,
-                height:
-                    device == Device.desktop ? size.height * 0.6 : size.height,
+                height: size.height * 0.8,
                 padding: const EdgeInsets.symmetric(
                     horizontal: 18.0, vertical: 28.0),
                 child: Column(
@@ -68,16 +71,80 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                     Padding(
                       padding: const EdgeInsets.only(right: 42.0),
                       child: Text(
-                        "Login to manage your bookings. Just one click and you'll be in.",
+                        "Welcome to the best gaming community there is. Log in to manage your lounge, book your next session, or join tournaments. Together, let's make gaming unforgettable.",
                         style: GoogleFonts.roboto(fontSize: 20),
                       ),
                     ),
                     const SizedBox(height: 32.0),
+                    Text(
+                      "Enter your email",
+                      style: GoogleFonts.roboto(
+                          fontSize: 18.0, color: Colors.white),
+                    ),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                    BorderedTextField(
+                        hintText: 'Email ID',
+                        controller: TextEditingController()),
+                    const SizedBox(
+                      height: 16.0,
+                    ),
+                    Text(
+                      "And your password obviously..",
+                      style: GoogleFonts.roboto(
+                          fontSize: 18.0, color: Colors.white),
+                    ),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                    BorderedTextField(
+                        hintText: 'Password',
+                        controller: TextEditingController()),
+                    const SizedBox(height: 32.0),
+                    Wrap(
+                      spacing: 20.0,
+                      runSpacing: 20.0,
+                      children: [
+                        StackedContainer(
+                          height: 48.0,
+                          width: 220.0,
+                          containerSpacing: 4.0,
+                          fillColor: Colors.amber,
+                          child: Center(
+                            child: Text(
+                              "Login",
+                              style: GoogleFonts.roboto(
+                                  fontSize: 18.0, color: Colors.black),
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            locator.get<NavigationService>().gotoPage(AppRoutes.signupPage, context);
+                          },
+                          child: Container(
+                            width: 300,
+                            height: 50,
+                            alignment: Alignment.center,
+                            child: Text("Don't have an account? Sign-up now!", style: GoogleFonts.roboto(fontSize:16, color: Colors.white),)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 32.0,
+                    ),
+                    Text(
+                      "Or you can use Google",
+                      style: GoogleFonts.roboto(
+                          fontSize: 18.0, color: Colors.white),
+                    ),
+                    const SizedBox(height: 12.0),
                     StackedContainer(
                       height: 48.0,
                       width: 220.0,
                       containerSpacing: 4.0,
-                      fillColor: Colors.greenAccent,
+                      fillColor: Colors.black,
                       child: Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +159,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                             Text(
                               "Google Login",
                               style: GoogleFonts.roboto(
-                                  fontSize: 18.0, color: Colors.black),
+                                  fontSize: 18.0, color: Colors.white),
                             ),
                           ],
                         ),

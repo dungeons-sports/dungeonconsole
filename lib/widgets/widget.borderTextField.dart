@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class BorderedTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
-  const BorderedTextField({super.key, required this.hintText, required this.controller});
+  final bool isObscured;
+  const BorderedTextField({super.key, required this.hintText, required this.controller, this.isObscured = false});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      obscureText: isObscured,
       controller: controller,
       cursorColor: Colors.white,
       decoration: InputDecoration(
