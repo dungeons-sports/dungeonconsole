@@ -25,6 +25,12 @@ class FirestoreServiceImpl extends FirestoreService {
       {bool isPlayer = false, bool isCafe = false}) async {
     try {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      DocumentSnapshot userDoc = await firestore.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        return AppUser.fromJson(userDoc.data() as Map<String, dynamic>);
+      }
+
       AppUser appUser = AppUser(
         id: user.uid,
         email: user.email!,
