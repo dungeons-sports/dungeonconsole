@@ -1,4 +1,5 @@
 import 'package:dungeonconsole/models/modelCafe/model.cafe.dart';
+import 'package:dungeonconsole/models/modelConsole/model.console.dart';
 import 'package:dungeonconsole/models/modelUser/model.user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,6 +15,10 @@ abstract class FirestoreService {
 
   Future<void> createCafeRecord(Cafe cafeDetails, String uid);
 
+  Future<void> createConsoleRecord(List<Console> consoles, String cafeId);
+
+  Future<void> updateConsoleRecord(Console console, String cafeId);
+
   Future<void> updateCafeRecord(Cafe cafeDetails);
 
   Future<Cafe> getCafeRecord(String cafeId);
@@ -26,7 +31,8 @@ class FirestoreServiceImpl extends FirestoreService {
     try {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      DocumentSnapshot userDoc = await firestore.collection('users').doc(user.uid).get();
+      DocumentSnapshot userDoc =
+          await firestore.collection('users').doc(user.uid).get();
       if (userDoc.exists) {
         return AppUser.fromJson(userDoc.data() as Map<String, dynamic>);
       }
@@ -71,7 +77,10 @@ class FirestoreServiceImpl extends FirestoreService {
   Future<void> createCafeRecord(Cafe cafeDetails, String uid) async {
     try {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
-      await firestore.collection('cafes').doc().set(cafeDetails.toJson());
+      await firestore
+          .collection('cafes')
+          .doc(cafeDetails.id)
+          .set(cafeDetails.toJson(), SetOptions(merge: true));
       await firestore
           .collection('users')
           .doc(uid)
@@ -112,5 +121,55 @@ class FirestoreServiceImpl extends FirestoreService {
       print(e);
       rethrow;
     }
+  }
+
+  @override
+  Future<void> createConsoleRecord(
+      List<Console> consoles, String cafeId) async {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final WriteBatch batch = firestore.batch();
+
+      for (var console in consoles) {
+        final consoleRef = firestore
+            .collection('cafes')
+            .doc(cafeId)
+            .collection('consoles')
+            .doc(console.consoleId);
+
+        batch.set(
+          consoleRef,
+          console
+              .copyWith(
+                tsCreated: DateTime.now().toUtc().toString(),
+                tsUpdated: DateTime.now().toUtc().toString(),
+              )
+              .toJson(),
+          SetOptions(merge: true),
+        );
+      }
+
+      // Commit all batched writes
+      await batch.commit();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateConsoleRecord(Console console, String cafeId) async {
+    try {
+      try {
+        final FirebaseFirestore firestore = FirebaseFirestore.instance;
+        await firestore
+            .collection('cafes')
+            .doc(cafeId)
+            .collection('consoles')
+            .doc(console.consoleId)
+            .set(console.toJson(), SetOptions(merge: true));
+      } catch (e) {
+        rethrow;
+      }
+    } catch (e) {}
   }
 }

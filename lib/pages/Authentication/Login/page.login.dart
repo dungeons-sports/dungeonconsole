@@ -27,7 +27,6 @@ class LoginPage extends StatelessWidget {
                     width: 200,
                     height: 200,
                   ),
-                  
                   Center(
                       child: Text(
                     "Managing is not supported on Mobile Devices\nSwitch to Desktop",
@@ -125,7 +124,12 @@ class LoginPage extends StatelessWidget {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  vm.loginWithEmail();
+                                  vm.loginWithEmail().then((isCafe) {
+                                    if (isCafe != null && isCafe) {
+                                      GoRouter.of(context).pushReplacement(
+                                          AppRoutes.dashboardPage.path);
+                                    } else {}
+                                  });
                                 },
                                 child: StackedContainer(
                                   height: 48.0,
@@ -170,7 +174,7 @@ class LoginPage extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               vm.signUpWithGoogle(false).then((isCafe) {
-                                if (isCafe) {
+                                if (isCafe != null && isCafe) {
                                   GoRouter.of(context).pushReplacement(
                                       AppRoutes.dashboardPage.path);
                                 } else {}

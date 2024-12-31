@@ -1,5 +1,7 @@
+import 'package:dungeonconsole/models/modelConsole/model.console.dart';
 import 'package:dungeonconsole/pages/PartnerWithUs/vm.partnerWithUs.dart';
 import 'package:dungeonconsole/widgets/widget.borderTextField.dart';
+import 'package:dungeonconsole/widgets/widget.selectableChip.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -30,6 +32,150 @@ class RegisterStepTwo extends StatelessWidget {
         const SizedBox(
           height: 32.0,
         ),
+        Text(
+          "Devices Installed (You can select multiple)",
+          style: GoogleFonts.roboto(fontSize: 18.0, color: Colors.white),
+        ),
+        const SizedBox(
+          height: 8.0,
+        ),
+        Wrap(
+          runSpacing: 12.0,
+          spacing: 12.0,
+          children: [
+            SelectableChip(
+              onSelect: (value) {
+                if (!value) {
+                  vm.removeAvailableConsole(ConsoleCategory.pc);
+                  return;
+                }
+                vm.addAvailableConsole(ConsoleCategory.pc);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/icons/monitor.png',
+                    height: 25,
+                  ),
+                  const SizedBox(width: 10.0),
+                  const Text("PC")
+                ],
+              ),
+            ),
+            SelectableChip(
+              onSelect: (value) {
+                if (!value) {
+                  vm.removeAvailableConsole(ConsoleCategory.ps);
+                  return;
+                }
+                vm.addAvailableConsole(
+                  ConsoleCategory.ps,
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/icons/playstation-logotype.png',
+                    height: 25,
+                  ),
+                  const SizedBox(width: 10.0),
+                  const Text("PS")
+                ],
+              ),
+            ),
+            SelectableChip(
+              onSelect: (value) {
+                if (!value) {
+                  vm.removeAvailableConsole(ConsoleCategory.xbox);
+                  return;
+                }
+                vm.addAvailableConsole(
+                  ConsoleCategory.xbox,
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/icons/xbox-logo.png',
+                    height: 25,
+                  ),
+                  const SizedBox(width: 10.0),
+                  const Text("XBox")
+                ],
+              ),
+            ),
+            SelectableChip(
+              onSelect: (value) {
+                if (!value) {
+                  vm.removeAvailableConsole(ConsoleCategory.vr);
+                  return;
+                }
+                vm.addAvailableConsole(
+                  ConsoleCategory.vr,
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/icons/virtual-reality-glasses.png',
+                    height: 25,
+                  ),
+                  const SizedBox(width: 10.0),
+                  const Text("VR")
+                ],
+              ),
+            ),
+            SelectableChip(
+              onSelect: (value) {
+                if (!value) {
+                  vm.removeAvailableConsole(ConsoleCategory.streaming);
+                  return;
+                }
+                vm.addAvailableConsole(
+                  ConsoleCategory.streaming,
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.play_arrow,
+                    color: Colors.grey[200],
+                  ),
+                  const SizedBox(width: 10.0),
+                  const Text("Streaming")
+                ],
+              ),
+            ),
+            SelectableChip(
+              onSelect: (value) {
+                if (!value) {
+                  vm.removeAvailableConsole(ConsoleCategory.simRacing);
+                  return;
+                }
+                vm.addAvailableConsole(
+                  ConsoleCategory.simRacing,
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/icons/fast.png',
+                    height: 25,
+                  ),
+                  const SizedBox(width: 10.0),
+                  const Text("Sim Racing")
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16.0,),
         if (vm.isPCAvailable) ...[
           Text(
             "How many PC systems do you have?",

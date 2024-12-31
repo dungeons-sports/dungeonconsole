@@ -1,4 +1,4 @@
-import 'package:dungeonconsole/models/modelConsole/model.console.dart';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 
@@ -14,9 +14,7 @@ class Cafe extends Equatable {
   final String city;
   final String state;
 
-  // Step Two
-  @JsonKey(toJson: _consoleListToJson, fromJson: _consoleListFromJson)
-  final List<Console> consoleType;
+  // Step three
   final bool isGamingChair;
   final bool isWashroom;
   final bool isAC;
@@ -24,8 +22,6 @@ class Cafe extends Equatable {
   final bool isFoodAllowed;
   final bool isAlwaysOpen;
   final bool isSmokingAllowed;
-
-  // Step three
   final String openTimeUTC;
   final String closeTimeUTC;
   final String topGames;
@@ -46,7 +42,6 @@ class Cafe extends Equatable {
     required this.state,
     required this.googleMapsLink,
     required this.topGames,
-    required this.consoleType,
     required this.isGamingChair,
     required this.isWashroom,
     required this.isAC,
@@ -75,7 +70,6 @@ class Cafe extends Equatable {
         state = '',
         googleMapsLink = '',
         topGames = '',
-        consoleType = const [],
         isGamingChair = false,
         isWashroom = false,
         isAC = false,
@@ -99,7 +93,6 @@ class Cafe extends Equatable {
     String? state,
     String? googleMapsLink,
     String? topGames,
-    List<Console>? consoleType,
     bool? isGamingChair,
     bool? isWashroom,
     bool? isAC,
@@ -124,7 +117,6 @@ class Cafe extends Equatable {
       state: state ?? this.state,
       googleMapsLink: googleMapsLink ?? this.googleMapsLink,
       topGames: topGames ?? this.topGames,
-      consoleType: consoleType ?? this.consoleType,
       isGamingChair: isGamingChair ?? this.isGamingChair,
       isWashroom: isWashroom ?? this.isWashroom,
       isAC: isAC ?? this.isAC,
@@ -140,14 +132,6 @@ class Cafe extends Equatable {
       tsUpdated: tsUpdated ?? this.tsUpdated,
     );
   }
-
-  // Helper methods for consoleType serialization/deserialization
-  static List<Map<String, dynamic>> _consoleListToJson(
-          List<Console> consoles) =>
-      consoles.map((console) => console.toJson()).toList();
-
-  static List<Console> _consoleListFromJson(List<dynamic> json) =>
-      json.map((e) => Console.fromJson(e as Map<String, dynamic>)).toList();
 
   @override
   List<Object?> get props => [
@@ -166,7 +150,6 @@ class Cafe extends Equatable {
         isSmokingAllowed,
         googleMapsLink,
         topGames,
-        consoleType,
         openTimeUTC,
         closeTimeUTC,
         tsCreated,

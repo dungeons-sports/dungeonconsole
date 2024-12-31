@@ -1,6 +1,7 @@
 import 'package:dungeonconsole/helpers/helper.navigationRoutes.dart';
 import 'package:dungeonconsole/pages/Authentication/Login/vm.login.dart';
 import 'package:dungeonconsole/pages/Authentication/SignUp/vm.signup.dart';
+import 'package:dungeonconsole/pages/Dashboard/vm.dashboard.dart';
 import 'package:dungeonconsole/pages/PartnerWithUs/vm.partnerWithUs.dart';
 import 'package:dungeonconsole/services/service.authentication.dart';
 import 'package:dungeonconsole/services/service.firestore.dart';
@@ -32,6 +33,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => VMDashboard()),
         ChangeNotifierProvider(create: (_) => VMPartnerWithUs()),
         ChangeNotifierProvider(create: (_) => VMSignup()),
         ChangeNotifierProvider(create: (_) => VMLogin()),

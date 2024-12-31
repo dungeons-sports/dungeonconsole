@@ -98,7 +98,6 @@ class VMPartnerWithUs extends ChangeNotifier {
   String _closeTimeUTC = 'TBD';
   String _city = '';
   String _state = '';
-  final List<Console> _consoles = [];
 
   bool _isPSConsoleAvailable = false;
   bool _isPCAvailable = false;
@@ -219,76 +218,6 @@ class VMPartnerWithUs extends ChangeNotifier {
     }
   }
 
-  void removeConsole(String consoleId, ConsoleType type) {
-    switch (type) {
-      case ConsoleType.pc:
-        _isPCAvailable = true;
-        break;
-      case ConsoleType.ps:
-        _isPSConsoleAvailable = true;
-        break;
-      case ConsoleType.vr:
-        _isVRAvailable = true;
-        break;
-      case ConsoleType.xbox:
-        _isXboxAvailable = true;
-        break;
-      case ConsoleType.streaming:
-        _isStreamingAvailable = true;
-        break;
-      case ConsoleType.simRacing:
-        _isSimRacingAvailable = true;
-        break;
-    }
-
-    _consoles.removeWhere((console) => console.consoleId == consoleId);
-    notifyListeners();
-  }
-
-  void addConsole({
-    required String consoleId,
-    required ConsoleType type,
-    required bool allowMultiplayer,
-    required double perHourPrice,
-    required String tsCreated,
-    required String tsUpdated,
-  }) {
-    switch (type) {
-      case ConsoleType.pc:
-        _isPCAvailable = true;
-        break;
-      case ConsoleType.ps:
-        _isPSConsoleAvailable = true;
-        break;
-      case ConsoleType.vr:
-        _isVRAvailable = true;
-        break;
-      case ConsoleType.xbox:
-        _isXboxAvailable = true;
-        break;
-      case ConsoleType.streaming:
-        _isStreamingAvailable = true;
-        break;
-      case ConsoleType.simRacing:
-        _isSimRacingAvailable = true;
-        break;
-    }
-
-    Console console = Console(
-      type: type,
-      consoleId: consoleId,
-      multiplayer: allowMultiplayer,
-      count: 1,
-      cost: perHourPrice,
-      tsCreated: tsCreated,
-      tsUpdated: tsUpdated,
-    );
-    _consoles.add(console);
-    notifyListeners();
-  }
-
-  List<Console> get consoles => _consoles;
-
   String get city => _city;
   set city(String value) {
     _city = value;
@@ -313,15 +242,56 @@ class VMPartnerWithUs extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> checkIfLoggedIn() async {
-    AppUser? user = await locator.get<AuthenticationService>().getCurrentUser();
-    if(user != null){
-      if(user.cafeId != null && user.cafeId != ""){
-        cafeDetails = await locator.get<FirestoreService>().getCafeRecord(user.cafeId!);
+  final List<ConsoleCategory> _availableConsoles = [];
+  final List<Console> _consoles = [];
+  List<Console> get consoles => _consoles;
 
+  void addAvailableConsole(ConsoleCategory category) {
+    // Set the UI values
+    switch (category) {
+      case ConsoleCategory.pc:
+        _isPCAvailable = true;
+      case ConsoleCategory.ps:
+        _isPSConsoleAvailable = true;
+      case ConsoleCategory.vr:
+        _isVRAvailable = true;
+      case ConsoleCategory.xbox:
+        _isXboxAvailable = true;
+      case ConsoleCategory.streaming:
+        _isStreamingAvailable = true;
+      case ConsoleCategory.simRacing:
+        _isSimRacingAvailable = true;
+    }
+    _availableConsoles.add(category);
+  }
+
+  void removeAvailableConsole(ConsoleCategory category) {
+    // Set the UI values
+    switch (category) {
+      case ConsoleCategory.pc:
+        _isPCAvailable = false;
+      case ConsoleCategory.ps:
+        _isPSConsoleAvailable = false;
+      case ConsoleCategory.vr:
+        _isVRAvailable = false;
+      case ConsoleCategory.xbox:
+        _isXboxAvailable = false;
+      case ConsoleCategory.streaming:
+        _isStreamingAvailable = false;
+      case ConsoleCategory.simRacing:
+        _isSimRacingAvailable = false;
+    }
+    _availableConsoles.remove(category);
+  }
+
+  Future<bool> fetchRequiredDetails() async {
+    AppUser? user = await locator.get<AuthenticationService>().getCurrentUser();
+    if (user != null) {
+      if (user.cafeId != null && user.cafeId != "") {
+        cafeDetails =
+            await locator.get<FirestoreService>().getCafeRecord(user.cafeId!);
         _currentStep = cafeDetails.registerStep;
         notifyListeners();
-
       }
     }
     return !(user == null);
@@ -332,7 +302,7 @@ class VMPartnerWithUs extends ChangeNotifier {
       return;
     }
 
-    if (_city.isEmpty || _state.isEmpty || _consoles.isEmpty) {
+    if (_city.isEmpty || _state.isEmpty) {
       // Handle validation error
       return;
     }
@@ -351,7 +321,6 @@ class VMPartnerWithUs extends ChangeNotifier {
         cafeName: cafeNameController.text,
         city: _city,
         state: _state,
-        consoleType: _consoles,
         registerStep: 1,
         tsCreated: DateTime.now().toUtc().toString(),
         tsUpdated: DateTime.now().toUtc().toString(),
@@ -373,6 +342,23 @@ class VMPartnerWithUs extends ChangeNotifier {
     }
   }
 
+  void createConsoleWithCount(
+      ConsoleCategory category, int count, double cost) {
+    for (int i = 0; i < count; i++) {
+      String consoleId = StringHelper.generateDocId();
+      _consoles.add(
+        Console(
+          type: category,
+          consoleId: 'console_$consoleId',
+          multiplayer: false,
+          cost: cost,
+          tsCreated: '',
+          tsUpdated: '',
+        ),
+      );
+    }
+  }
+
   Future<void> submitInventoryInfo() async {
     if (_isLoading) {
       return;
@@ -381,60 +367,60 @@ class VMPartnerWithUs extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      List<Console> consoleDetails = [];
-
-      for (var i = 0; i < _consoles.length; i++) {
-        switch (_consoles[i].type) {
-          case ConsoleType.pc:
-            consoleDetails.add(_consoles[i].copyWith(
-              count: int.tryParse(pcCountController.text) ?? 0,
-              cost: double.tryParse(pcAmountController.text) ?? 0.0,
-            ));
+      for (ConsoleCategory category in _availableConsoles) {
+        switch (category) {
+          case ConsoleCategory.pc:
+            int count = int.tryParse(pcCountController.text) ?? 0;
+            double cost = double.tryParse(pcAmountController.text) ?? 0.0;
+            createConsoleWithCount(category, count, cost);
             break;
-          case ConsoleType.ps:
-            consoleDetails.add(_consoles[i].copyWith(
-              count: int.tryParse(psCountController.text) ?? 0,
-              cost: double.tryParse(psAmountController.text) ?? 0.0,
-            ));
+          case ConsoleCategory.ps:
+            int count = int.tryParse(psCountController.text) ?? 0;
+            double cost = double.tryParse(psAmountController.text) ?? 0.0;
+            createConsoleWithCount(category, count, cost);
             break;
-          case ConsoleType.vr:
-            consoleDetails.add(_consoles[i].copyWith(
-              count: int.tryParse(vrCountController.text) ?? 0,
-              cost: double.tryParse(vrAmountController.text) ?? 0.0,
-            ));
+          case ConsoleCategory.vr:
+            int count = int.tryParse(vrCountController.text) ?? 0;
+            double cost = double.tryParse(vrAmountController.text) ?? 0.0;
+            createConsoleWithCount(category, count, cost);
             break;
-          case ConsoleType.xbox:
-            consoleDetails.add(_consoles[i] = _consoles[i].copyWith(
-              count: int.tryParse(xboxCountController.text) ?? 0,
-              cost: double.tryParse(xboxAmountController.text) ?? 0.0,
-            ));
+          case ConsoleCategory.xbox:
+            int count = int.tryParse(xboxCountController.text) ?? 0;
+            double cost = double.tryParse(xboxAmountController.text) ?? 0.0;
+            createConsoleWithCount(category, count, cost);
             break;
-          case ConsoleType.streaming:
-            consoleDetails.add(_consoles[i] = _consoles[i].copyWith(
-              count: int.tryParse(streamingCountController.text) ?? 0,
-              cost: double.tryParse(streamingAmountController.text) ?? 0.0,
-            ));
+          case ConsoleCategory.streaming:
+            int count = int.tryParse(streamingCountController.text) ?? 0;
+            double cost =
+                double.tryParse(streamingAmountController.text) ?? 0.0;
+            createConsoleWithCount(category, count, cost);
             break;
-          case ConsoleType.simRacing:
-            consoleDetails.add(_consoles[i] = _consoles[i].copyWith(
-              count: int.tryParse(simRacingCountController.text) ?? 0,
-              cost: double.tryParse(simRacingAmountController.text) ?? 0.0,
-            ));
+          case ConsoleCategory.simRacing:
+            int count = int.tryParse(simRacingCountController.text) ?? 0;
+            double cost =
+                double.tryParse(simRacingAmountController.text) ?? 0.0;
+            createConsoleWithCount(category, count, cost);
             break;
         }
       }
 
-      Cafe updatedCafeDetails =
-          cafeDetails.copyWith(consoleType: consoleDetails,tsUpdated: DateTime.now().toUtc().toString(),  registerStep: 2,);
-      await locator
-          .get<FirestoreService>()
-          .updateCafeRecord(updatedCafeDetails);
+      final firestoreService = locator.get<FirestoreService>();
+      await firestoreService.createConsoleRecord(
+          _consoles, cafeDetails.id);
+
+      await firestoreService.updateCafeRecord(cafeDetails.copyWith(
+          registerStep: 2, tsUpdated: DateTime.now().toUtc().toString()));
 
       _isLoading = false;
       notifyListeners();
     } catch (e) {
+      _isLoading = false;
+      notifyListeners();
       print(e);
     }
+
+    _isLoading = false;
+    notifyListeners();
   }
 
   void submitFinal() async {

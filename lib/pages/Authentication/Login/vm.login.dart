@@ -12,7 +12,7 @@ class VMLogin extends ChangeNotifier {
   TextEditingController get passwordController => _passwordController;
   bool get isLoading => _isLoading;
 
-  Future<void> loginWithEmail() async {
+  Future<bool?> loginWithEmail() async {
     final AuthenticationService authService =
         locator.get<AuthenticationService>();
     final String email = _emailController.text;
@@ -20,20 +20,26 @@ class VMLogin extends ChangeNotifier {
 
     if (email.isEmpty || password.isEmpty) {
       print('Email and password must not be empty');
-      return;
+      return null;
     }
 
     try {
-      await authService.loginWithEmailPassword(email, password);
+      AppUser? appUser = await authService.loginWithEmailPassword(email, password);
+      if(appUser != null){
+        return appUser.isCafe;
+      }
+
+      return false;
     } catch (e) {
       // Handle login error
       print('Login failed: $e');
+      return null;
     }
   }
 
-  Future<bool> signUpWithGoogle(bool isPartner) async {
+  Future<bool?> signUpWithGoogle(bool isPartner) async {
     if (_isLoading) {
-      return false;
+      return null;
     }
 
     try {
@@ -44,9 +50,7 @@ class VMLogin extends ChangeNotifier {
       AppUser? appUser = await authService.signUpWithGoogle(isPartner);
 
       if(appUser != null){
-        if(appUser.cafeId != null){
-          return true;
-        }
+        return appUser.isCafe;
       }
 
       _isLoading = false;

@@ -57,7 +57,7 @@ class PartnerWithUsPage extends StatelessWidget {
               if (size.width > 600) const Spacer(),
               Consumer<VMPartnerWithUs>(
                 builder: (context, vm, index) {
-                  vm.checkIfLoggedIn().then((isLoggedIn) {
+                  vm.fetchRequiredDetails().then((isLoggedIn) {
                     if (!isLoggedIn) {
                       GoRouter.of(context)
                           .pushReplacement(AppRoutes.loginPage.path);
@@ -111,6 +111,7 @@ class PartnerWithUsPage extends StatelessWidget {
                                 alignment: Alignment.centerLeft,
                                 child: InkWell(
                                   onTap: () {
+                                    print(vm.currentStep);
                                     if (vm.currentStep == 0) {
                                       vm.submit();
                                     }

@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'model.console.g.dart';
 
-enum ConsoleType {
+enum ConsoleCategory {
   pc,
   ps,
   vr,
@@ -15,9 +15,8 @@ enum ConsoleType {
 @JsonSerializable()
 class Console extends Equatable {
   final String consoleId;
-  final ConsoleType type;
+  final ConsoleCategory type;
   final bool multiplayer;
-  final int count;
   final double cost;
   final String tsCreated;
   final String tsUpdated;
@@ -26,7 +25,6 @@ class Console extends Equatable {
     required this.type,
     required this.consoleId,
     required this.multiplayer,
-    required this.count,
     required this.cost,
     required this.tsCreated,
     required this.tsUpdated,
@@ -39,16 +37,15 @@ class Console extends Equatable {
 
   const Console.empty()
       : consoleId = '',
-        type = ConsoleType.pc,
+        type = ConsoleCategory.pc,
         multiplayer = false,
-        count = 1,
         cost = 0.0,
         tsCreated = '',
         tsUpdated = '';
 
   Console copyWith({
     String? consoleId,
-    ConsoleType? type,
+    ConsoleCategory? type,
     bool? multiplayer,
     int? count,
     double? cost,
@@ -59,7 +56,6 @@ class Console extends Equatable {
       type: type ?? this.type,
       consoleId: consoleId ?? this.consoleId,
       multiplayer: multiplayer ?? this.multiplayer,
-      count: count??this.count,
       cost: cost ?? this.cost,
       tsCreated: tsCreated ?? this.tsCreated,
       tsUpdated: tsUpdated ?? this.tsUpdated,
@@ -68,5 +64,5 @@ class Console extends Equatable {
 
   @override
   List<Object?> get props =>
-      [consoleId, multiplayer,count, cost, tsCreated, tsUpdated];
+      [consoleId, multiplayer, cost, tsCreated, tsUpdated];
 }
