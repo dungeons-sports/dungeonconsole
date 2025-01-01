@@ -322,8 +322,8 @@ class VMPartnerWithUs extends ChangeNotifier {
         city: _city,
         state: _state,
         registerStep: 1,
-        tsCreated: DateTime.now().toUtc().toString(),
-        tsUpdated: DateTime.now().toUtc().toString(),
+        tsCreated: DateTime.now().toIso8601String().toString(),
+        tsUpdated: DateTime.now().toIso8601String().toString(),
       );
 
       AppUser? user =
@@ -410,7 +410,7 @@ class VMPartnerWithUs extends ChangeNotifier {
           _consoles, cafeDetails.id);
 
       await firestoreService.updateCafeRecord(cafeDetails.copyWith(
-          registerStep: 2, tsUpdated: DateTime.now().toUtc().toString()));
+          registerStep: 2, tsUpdated: DateTime.now().toIso8601String()));
 
       _isLoading = false;
       notifyListeners();
@@ -434,7 +434,7 @@ class VMPartnerWithUs extends ChangeNotifier {
       notifyListeners();
 
       Cafe updatedCafeDetails = cafeDetails.copyWith(
-        tsUpdated: DateTime.now().toUtc().toString(),
+        tsUpdated: DateTime.now().toIso8601String().toString(),
         openTimeUTC: _openTimeUTC,
         closeTimeUTC: _closeTimeUTC,
         isGamingChair: _isGamingChair,

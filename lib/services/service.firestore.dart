@@ -29,6 +29,8 @@ abstract class FirestoreService {
   Future<List<Booking>> getBookings(
       String cafeId, String consoleId, String date);
 
+  Future<List<Booking>> getBookingsByDate(String cafeId, String date);
+
   Future<Console?> findAvailableConsole(String cafeId, ConsoleCategory category,
       Timestamp startTime, Timestamp endTime);
 
@@ -36,13 +38,11 @@ abstract class FirestoreService {
     String cafeId,
     ConsoleCategory category,
     Timestamp startTime,
-    Timestamp endTime,
-    {
-      String? customerId,
-      String? customerName,
-      String? contactNumber,
-    }
-  );
+    Timestamp endTime, {
+    String? customerId,
+    String? customerName,
+    String? contactNumber,
+  });
 }
 
 class FirestoreServiceImpl extends FirestoreService {
@@ -162,8 +162,8 @@ class FirestoreServiceImpl extends FirestoreService {
           consoleRef,
           console
               .copyWith(
-                tsCreated: DateTime.now().toUtc().toString(),
-                tsUpdated: DateTime.now().toUtc().toString(),
+                tsCreated: DateTime.now().toIso8601String(),
+                tsUpdated: DateTime.now().toIso8601String(),
               )
               .toJson(),
           SetOptions(merge: true),
@@ -259,7 +259,7 @@ class FirestoreServiceImpl extends FirestoreService {
 
         // Fetch bookings for the console on the same date as startTime
         String bookingDate =
-            startTime.toDate().toUtc().toIso8601String().split('T')[0];
+            startTime.toDate().toIso8601String().split('T')[0];
         List<Booking> bookings =
             await getBookings(cafeId, console.consoleId, bookingDate);
 
@@ -286,13 +286,11 @@ class FirestoreServiceImpl extends FirestoreService {
     String cafeId,
     ConsoleCategory category,
     Timestamp startTime,
-    Timestamp endTime,
-    {
-      String? customerId,
-      String? customerName,
-      String? contactNumber,
-    }
-  ) async {
+    Timestamp endTime, {
+    String? customerId,
+    String? customerName,
+    String? contactNumber,
+  }) async {
     try {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       // Find the first available console
@@ -304,28 +302,31 @@ class FirestoreServiceImpl extends FirestoreService {
       }
 
       // Prepare booking document
-      String bookingId = 'booking_${cafeId}_${availableConsole.consoleId}_${startTime.toDate().toUtc().toIso8601String()}';
+      String bookingId =
+          'booking_${cafeId}_${availableConsole.consoleId}_${startTime.toDate().toIso8601String()}';
       String bookingDate =
-          startTime.toDate().toUtc().toIso8601String().split('T')[0];
+          startTime.toDate().toIso8601String().split('T')[0];
 
       // Calculate the cost of booking
       double hourlyCost = availableConsole.cost;
-      double duration = endTime.toDate().difference(startTime.toDate()).inHours.toDouble();
-      double totalCost = hourlyCost * duration;    
-      
+      double duration =
+          endTime.toDate().difference(startTime.toDate()).inHours.toDouble();
+      double totalCost = hourlyCost * duration;
+
       Booking newBooking = Booking(
         bookingId: bookingId,
         consoleId: availableConsole.consoleId,
+        consoleName: availableConsole.name,
         cafeId: cafeId,
         startTime: startTime,
         status: BookingStatus.confirmed,
         endTime: endTime,
-        customerId: customerId??"CAFE_BOOKED",
-        customerName: customerName??"CAFE_BOOKED",
-        contactNumber: contactNumber??"CAFE_BOOKED",
+        customerId: customerId ?? "CAFE_BOOKED",
+        customerName: customerName ?? "CAFE_BOOKED",
+        contactNumber: contactNumber ?? "CAFE_BOOKED",
         cost: totalCost,
-        tsCreated: DateTime.now().toUtc().toIso8601String(),
-        tsUpdated: DateTime.now().toUtc().toIso8601String(),
+        tsCreated: DateTime.now().toIso8601String(),
+        tsUpdated: DateTime.now().toIso8601String(),
       );
 
       // Save booking to Firestore
@@ -342,6 +343,47 @@ class FirestoreServiceImpl extends FirestoreService {
       return newBooking; // Booking successfully created
     } catch (e) {
       print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Booking>> getBookingsByDate(String cafeId, String date) async {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Get all consoles for the given cafe
+      final consolesSnapshot = await firestore
+          .collection('cafes')
+          .doc(cafeId)
+          .collection('consoles')
+          .get();
+
+      List<Booking> bookings = [];
+
+      // Loop through each console and fetch bookings for the given date
+      for (var consoleDoc in consolesSnapshot.docs) {
+        final consoleId = consoleDoc.id;
+
+        // Fetch bookings for the given date in the console's sub-collection
+        final bookingsSnapshot = await firestore
+            .collection('cafes')
+            .doc(cafeId)
+            .collection('consoles')
+            .doc(consoleId)
+            .collection(date)
+            .orderBy('endTime', descending: true)
+            .get();
+
+        // Convert each booking document into a Booking object and add to the list
+        bookings.addAll(bookingsSnapshot.docs.map((doc) {
+          return Booking.fromJson(doc.data());
+        }));
+      }
+
+      return bookings;
+    } catch (e) {
+      print('Error fetching bookings: $e');
       rethrow;
     }
   }

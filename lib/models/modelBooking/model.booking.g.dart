@@ -9,6 +9,7 @@ part of 'model.booking.dart';
 Booking _$BookingFromJson(Map<String, dynamic> json) => Booking(
       bookingId: json['bookingId'] as String,
       consoleId: json['consoleId'] as String,
+      consoleName: json['consoleName'] as String,
       cafeId: json['cafeId'] as String,
       startTime:
           const TimestampConverter().fromJson(json['startTime'] as Object),
@@ -26,6 +27,7 @@ Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
       'bookingId': instance.bookingId,
       'consoleId': instance.consoleId,
       'cafeId': instance.cafeId,
+      'consoleName': instance.consoleName,
       'startTime': const TimestampConverter().toJson(instance.startTime),
       'endTime': const TimestampConverter().toJson(instance.endTime),
       'customerId': instance.customerId,

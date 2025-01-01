@@ -16,6 +16,7 @@ class Booking extends Equatable {
   final String bookingId;
   final String consoleId;
   final String cafeId;
+  final String consoleName;
 
   @TimestampConverter()
   final Timestamp startTime;
@@ -35,6 +36,7 @@ class Booking extends Equatable {
   const Booking({
     required this.bookingId,
     required this.consoleId,
+    required this.consoleName,
     required this.cafeId,
     required this.startTime,
     required this.endTime,
@@ -53,5 +55,19 @@ class Booking extends Equatable {
   Map<String, dynamic> toJson() => _$BookingToJson(this);
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [
+    bookingId,
+    consoleId,
+    consoleName,
+    cafeId,
+    startTime,
+    endTime,
+    customerId,
+    customerName,
+    status,
+    contactNumber,
+    cost,
+    tsCreated,
+    tsUpdated,
+  ];
 }

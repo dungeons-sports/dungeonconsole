@@ -2,6 +2,7 @@ import 'package:dungeonconsole/helpers/helper.navigationRoutes.dart';
 import 'package:dungeonconsole/pages/Authentication/Login/vm.login.dart';
 import 'package:dungeonconsole/pages/Authentication/SignUp/vm.signup.dart';
 import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabCreateBooking/vm.createBooking.dart';
+import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabUpdateConsole/vm.updateConsole.dart';
 import 'package:dungeonconsole/pages/Dashboard/vm.dashboard.dart';
 import 'package:dungeonconsole/pages/PartnerWithUs/vm.partnerWithUs.dart';
 import 'package:dungeonconsole/services/service.authentication.dart';
@@ -34,6 +35,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => VMUpdateConsole()),
         ChangeNotifierProvider(create: (_) => VMCreateBooking()),
         ChangeNotifierProvider(create: (_) => VMDashboard()),
         ChangeNotifierProvider(create: (_) => VMPartnerWithUs()),

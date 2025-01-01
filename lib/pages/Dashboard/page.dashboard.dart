@@ -1,6 +1,7 @@
 import 'package:dungeonconsole/helpers/helper.navigationRoutes.dart';
 import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabCreateBooking/tab.createBooking.dart';
-import 'package:dungeonconsole/pages/Dashboard/DashTabs/tab.viewBooking.dart';
+import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabUpcomingBooking/tab.upcomingBookings.dart';
+// import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabUpdateConsole/tab.updateConsole.dart';
 import 'package:dungeonconsole/pages/Dashboard/vm.dashboard.dart';
 import 'package:dungeonconsole/widgets/widget.stackContainer.dart';
 import 'package:flutter/material.dart';
@@ -67,8 +68,7 @@ class DashboardPage extends StatelessWidget {
                                 ),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       "Dungeon Console",
@@ -97,7 +97,7 @@ class DashboardPage extends StatelessWidget {
                             ListTile(
                               title: const Text("Upcoming Booking"),
                               subtitle: const Text(
-                                "View curated booking for today",
+                                "View curated bookings for today",
                               ),
                               contentPadding: const EdgeInsets.all(0.0),
                               onTap: () {
@@ -114,6 +114,17 @@ class DashboardPage extends StatelessWidget {
                                 vm.currentTab = 2;
                               },
                             ),
+                            // ListTile(
+                            //   title: const Text("Update Console"),
+                            //   subtitle: const Text(
+                            //     "Add details about your devices.",
+                            //   ),
+                            //   contentPadding: const EdgeInsets.all(0.0),
+                            //   onTap: () {
+                            //     vm.currentTab = 3;
+                            //   },
+                            // ),
+                            const Spacer(),
                             ListTile(
                               title: const Text("Settings"),
                               subtitle: const Text(
@@ -121,7 +132,7 @@ class DashboardPage extends StatelessWidget {
                               ),
                               contentPadding: const EdgeInsets.all(0.0),
                               onTap: () {
-                                vm.currentTab = 3;
+                                vm.currentTab = 4;
                               },
                             ),
                           ],
@@ -130,12 +141,20 @@ class DashboardPage extends StatelessWidget {
                     ),
                     if (vm.currentTab == 0)
                       Expanded(
-                        flex: 4,
-                        child: CreateBookingTab(
-                          dashvm: vm,
+                          child: CreateBookingTab(
+                        dashvm: vm,
+                      )),
+                    if (vm.currentTab == 1)
+                      Expanded(
+                        child: UpcomingBookingTab(
+                          vmdash: vm,
                         ),
                       ),
-                    if (vm.currentTab == 1) const ViewBookingTab()
+                    // if (vm.currentTab == 3)
+                    //   Expanded(
+                    //       child: UpdateConsoleTab(
+                    //     dashvm: vm,
+                    //   ))
                   ],
                 );
               }));

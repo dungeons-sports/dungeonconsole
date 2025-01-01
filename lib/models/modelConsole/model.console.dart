@@ -19,6 +19,31 @@ class Console extends Equatable {
   final ConsoleCategory type;
   final bool multiplayer;
   final double cost;
+
+  // Display Information on PCs
+  final String? cpu;
+  final String? gpu;
+  final String? ram;
+  final String? storage;
+  final String? display;
+  final String? installedGames;
+
+  // Display Information on Consoles
+  final String? resolution;
+  final String? consoleType;
+  final String? controllerCount;
+  final String? installedGamesOnPSConsole;
+
+  // Display Information on XBox
+  final String? xboxResolution;
+  final String? xboxType;
+  final String? xboxControllerCount;
+  final String? installedGamesOnXbox;
+
+  // Display Information on VR
+  final String? vrType;
+  final String? installedGamesOnVR;
+
   final String tsCreated;
   final String tsUpdated;
 
@@ -28,6 +53,22 @@ class Console extends Equatable {
     required this.type,
     required this.multiplayer,
     required this.cost,
+    this.cpu,
+    this.gpu,
+    this.ram,
+    this.storage,
+    this.display,
+    this.installedGames,
+    this.resolution,
+    this.consoleType,
+    this.controllerCount,
+    this.installedGamesOnPSConsole,
+    this.xboxResolution,
+    this.xboxType,
+    this.xboxControllerCount,
+    this.installedGamesOnXbox,
+    this.vrType,
+    this.installedGamesOnVR,
     required this.tsCreated,
     required this.tsUpdated,
   });
@@ -38,7 +79,23 @@ class Console extends Equatable {
   Map<String, dynamic> toJson() => _$ConsoleToJson(this);
 
   const Console.empty()
-      : consoleId = '',
+      : cpu = null,
+        gpu = null,
+        ram = null,
+        storage = null,
+        display = null,
+        installedGames = null,
+        resolution = null,
+        consoleType = null,
+        controllerCount = null,
+        installedGamesOnPSConsole = null,
+        xboxResolution = null,
+        xboxType = null,
+        xboxControllerCount = null,
+        installedGamesOnXbox = null,
+        vrType = null,
+        installedGamesOnVR = null,
+        consoleId = '',
         name = '',
         type = ConsoleCategory.pc,
         multiplayer = false,
@@ -51,23 +108,78 @@ class Console extends Equatable {
     String? name,
     ConsoleCategory? type,
     bool? multiplayer,
-    int? count,
     double? cost,
+    String? cpu,
+    String? gpu,
+    String? ram,
+    String? storage,
+    String? display,
+    String? installedGames,
+    String? resolution,
+    String? consoleType,
+    String? controllerCount,
+    String? installedGamesOnPSConsole,
+    String? xboxResolution,
+    String? xboxType,
+    String? xboxControllerCount,
+    String? installedGamesOnXbox,
+    String? vrType,
+    String? installedGamesOnVR,
     String? tsCreated,
     String? tsUpdated,
   }) {
     return Console(
-      type: type ?? this.type,
-      name: name ?? this.name,
       consoleId: consoleId ?? this.consoleId,
+      name: name ?? this.name,
+      type: type ?? this.type,
       multiplayer: multiplayer ?? this.multiplayer,
       cost: cost ?? this.cost,
+      cpu: cpu ?? this.cpu,
+      gpu: gpu ?? this.gpu,
+      ram: ram ?? this.ram,
+      storage: storage ?? this.storage,
+      display: display ?? this.display,
+      installedGames: installedGames ?? this.installedGames,
+      resolution: resolution ?? this.resolution,
+      consoleType: consoleType ?? this.consoleType,
+      controllerCount: controllerCount ?? this.controllerCount,
+      installedGamesOnPSConsole:
+          installedGamesOnPSConsole ?? this.installedGamesOnPSConsole,
+      xboxResolution: xboxResolution ?? this.xboxResolution,
+      xboxType: xboxType ?? this.xboxType,
+      xboxControllerCount: xboxControllerCount ?? this.xboxControllerCount,
+      installedGamesOnXbox: installedGamesOnXbox ?? this.installedGamesOnXbox,
+      vrType: vrType ?? this.vrType,
+      installedGamesOnVR: installedGamesOnVR ?? this.installedGamesOnVR,
       tsCreated: tsCreated ?? this.tsCreated,
       tsUpdated: tsUpdated ?? this.tsUpdated,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [consoleId, multiplayer, name, cost, tsCreated, tsUpdated];
+  List<Object?> get props => [
+        consoleId,
+        name,
+        type,
+        multiplayer,
+        cost,
+        cpu,
+        gpu,
+        ram,
+        storage,
+        display,
+        installedGames,
+        resolution,
+        consoleType,
+        controllerCount,
+        installedGamesOnPSConsole,
+        xboxResolution,
+        xboxType,
+        xboxControllerCount,
+        installedGamesOnXbox,
+        vrType,
+        installedGamesOnVR,
+        tsCreated,
+        tsUpdated,
+      ];
 }
