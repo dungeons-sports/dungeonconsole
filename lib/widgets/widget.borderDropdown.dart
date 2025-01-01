@@ -4,12 +4,16 @@ import 'package:google_fonts/google_fonts.dart';
 class BorderDropDown extends StatefulWidget {
   final List<String> items;
   final String labelText;
+  final double? width;
+  final double? height;
   final Function(String) onChanged;
 
   const BorderDropDown({
     super.key,
     required this.items,
     required this.labelText,
+    this.width = 250,
+    this.height = 60,
     required this.onChanged,
   });
 
@@ -23,7 +27,7 @@ class _BorderDropDownState extends State<BorderDropDown> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 250,
+      width: widget.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -349,6 +349,7 @@ class VMPartnerWithUs extends ChangeNotifier {
       _consoles.add(
         Console(
           type: category,
+          name: '${category.name}_${i+1}',
           consoleId: 'console_$consoleId',
           multiplayer: false,
           cost: cost,

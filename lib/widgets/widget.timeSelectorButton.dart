@@ -5,10 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 class TimeSelectorButton extends StatefulWidget {
   final String labelText;
   final Function(TimeOfDay) onTimeSelect;
+  final double? height;
   const TimeSelectorButton({
     super.key,
     required this.labelText,
     required this.onTimeSelect,
+    this.height = 60,
   });
 
   @override
@@ -46,7 +48,7 @@ class _TimeSelectorButtonState extends State<TimeSelectorButton> {
           },
           child: Container(
             width: 200,
-            height: 50,
+            height: widget.height,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.white),

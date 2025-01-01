@@ -1,3 +1,4 @@
+import 'package:dungeonconsole/models/modelBooking/model.booking.dart';
 import 'package:dungeonconsole/models/modelCafe/model.cafe.dart';
 import 'package:dungeonconsole/models/modelConsole/model.console.dart';
 import 'package:dungeonconsole/models/modelUser/model.user.dart';
@@ -22,6 +23,26 @@ abstract class FirestoreService {
   Future<void> updateCafeRecord(Cafe cafeDetails);
 
   Future<Cafe> getCafeRecord(String cafeId);
+
+  Future<List<Console>?> getListedConsoles(String cafeId);
+
+  Future<List<Booking>> getBookings(
+      String cafeId, String consoleId, String date);
+
+  Future<Console?> findAvailableConsole(String cafeId, ConsoleCategory category,
+      Timestamp startTime, Timestamp endTime);
+
+  Future<Booking?> createBooking(
+    String cafeId,
+    ConsoleCategory category,
+    Timestamp startTime,
+    Timestamp endTime,
+    {
+      String? customerId,
+      String? customerName,
+      String? contactNumber,
+    }
+  );
 }
 
 class FirestoreServiceImpl extends FirestoreService {
@@ -171,5 +192,157 @@ class FirestoreServiceImpl extends FirestoreService {
         rethrow;
       }
     } catch (e) {}
+  }
+
+  @override
+  Future<List<Console>?> getListedConsoles(String cafeId) async {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      QuerySnapshot querySnapshot = await firestore
+          .collection('cafes')
+          .doc(cafeId)
+          .collection('consoles')
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs
+            .map((doc) => Console.fromJson(doc.data() as Map<String, dynamic>))
+            .toList();
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Booking>> getBookings(
+      String cafeId, String consoleId, String date) async {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      QuerySnapshot querySnapshot = await firestore
+          .collection('cafes')
+          .doc(cafeId)
+          .collection('consoles')
+          .doc(consoleId)
+          .collection(date)
+          .get();
+
+      return querySnapshot.docs.map((doc) {
+        return Booking.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Console?> findAvailableConsole(String cafeId, ConsoleCategory category,
+      Timestamp startTime, Timestamp endTime) async {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Fetch all consoles of the given category
+      QuerySnapshot consoleSnapshot = await firestore
+          .collection('cafes')
+          .doc(cafeId)
+          .collection('consoles')
+          .where('type', isEqualTo: category.name)
+          .get();
+
+      for (var consoleDoc in consoleSnapshot.docs) {
+        final console =
+            Console.fromJson(consoleDoc.data() as Map<String, dynamic>);
+
+        // Fetch bookings for the console on the same date as startTime
+        String bookingDate =
+            startTime.toDate().toUtc().toIso8601String().split('T')[0];
+        List<Booking> bookings =
+            await getBookings(cafeId, console.consoleId, bookingDate);
+
+        // Check for slot availability
+        bool isAvailable = bookings.every((booking) {
+          return booking.endTime.compareTo(startTime) <= 0 ||
+              booking.startTime.compareTo(endTime) >= 0;
+        });
+
+        if (isAvailable) {
+          return console; // Return the first available console
+        }
+      }
+
+      return null; // No available console found
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Booking?> createBooking(
+    String cafeId,
+    ConsoleCategory category,
+    Timestamp startTime,
+    Timestamp endTime,
+    {
+      String? customerId,
+      String? customerName,
+      String? contactNumber,
+    }
+  ) async {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      // Find the first available console
+      Console? availableConsole =
+          await findAvailableConsole(cafeId, category, startTime, endTime);
+
+      if (availableConsole == null) {
+        return null; // No console available
+      }
+
+      // Prepare booking document
+      String bookingId = 'booking_${cafeId}_${availableConsole.consoleId}_${startTime.toDate().toUtc().toIso8601String()}';
+      String bookingDate =
+          startTime.toDate().toUtc().toIso8601String().split('T')[0];
+
+      // Calculate the cost of booking
+      double hourlyCost = availableConsole.cost;
+      double duration = endTime.toDate().difference(startTime.toDate()).inHours.toDouble();
+      double totalCost = hourlyCost * duration;    
+      
+      Booking newBooking = Booking(
+        bookingId: bookingId,
+        consoleId: availableConsole.consoleId,
+        cafeId: cafeId,
+        startTime: startTime,
+        status: BookingStatus.confirmed,
+        endTime: endTime,
+        customerId: customerId??"CAFE_BOOKED",
+        customerName: customerName??"CAFE_BOOKED",
+        contactNumber: contactNumber??"CAFE_BOOKED",
+        cost: totalCost,
+        tsCreated: DateTime.now().toUtc().toIso8601String(),
+        tsUpdated: DateTime.now().toUtc().toIso8601String(),
+      );
+
+      // Save booking to Firestore
+      DocumentReference bookingRef = firestore
+          .collection('cafes')
+          .doc(cafeId)
+          .collection('consoles')
+          .doc(availableConsole.consoleId)
+          .collection(bookingDate)
+          .doc(bookingId);
+
+      await bookingRef.set(newBooking.toJson());
+
+      return newBooking; // Booking successfully created
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 }

@@ -15,6 +15,7 @@ enum ConsoleCategory {
 @JsonSerializable()
 class Console extends Equatable {
   final String consoleId;
+  final String name;
   final ConsoleCategory type;
   final bool multiplayer;
   final double cost;
@@ -22,8 +23,9 @@ class Console extends Equatable {
   final String tsUpdated;
 
   const Console({
-    required this.type,
     required this.consoleId,
+    required this.name,
+    required this.type,
     required this.multiplayer,
     required this.cost,
     required this.tsCreated,
@@ -37,6 +39,7 @@ class Console extends Equatable {
 
   const Console.empty()
       : consoleId = '',
+        name = '',
         type = ConsoleCategory.pc,
         multiplayer = false,
         cost = 0.0,
@@ -45,6 +48,7 @@ class Console extends Equatable {
 
   Console copyWith({
     String? consoleId,
+    String? name,
     ConsoleCategory? type,
     bool? multiplayer,
     int? count,
@@ -54,6 +58,7 @@ class Console extends Equatable {
   }) {
     return Console(
       type: type ?? this.type,
+      name: name ?? this.name,
       consoleId: consoleId ?? this.consoleId,
       multiplayer: multiplayer ?? this.multiplayer,
       cost: cost ?? this.cost,
@@ -64,5 +69,5 @@ class Console extends Equatable {
 
   @override
   List<Object?> get props =>
-      [consoleId, multiplayer, cost, tsCreated, tsUpdated];
+      [consoleId, multiplayer, name, cost, tsCreated, tsUpdated];
 }

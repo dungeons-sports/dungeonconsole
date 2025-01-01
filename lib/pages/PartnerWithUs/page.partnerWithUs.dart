@@ -111,7 +111,6 @@ class PartnerWithUsPage extends StatelessWidget {
                                 alignment: Alignment.centerLeft,
                                 child: InkWell(
                                   onTap: () {
-                                    print(vm.currentStep);
                                     if (vm.currentStep == 0) {
                                       vm.submit();
                                     }
