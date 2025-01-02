@@ -79,20 +79,20 @@ class SignupPage extends StatelessWidget {
                     child: Consumer<VMSignup>(
                       builder: (context, vm, c) {
                         if (vm.onLoginError) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(
-                                SnackBar(
-                                  content: Text(vm.loginErrorMessage),
-                                  backgroundColor: Colors.red,
-                                ),
-                              )
-                              .closed
-                              .then((_) {
-                            vm.clearLoginErrorMessage();
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(
+                                  SnackBar(
+                                    content: Text(vm.loginErrorMessage),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                )
+                                .closed
+                                .then((_) {
+                              vm.clearLoginErrorMessage();
+                            });
                           });
-                        });
-                      }
+                        }
 
                         return SingleChildScrollView(
                           child: Column(
@@ -107,7 +107,7 @@ class SignupPage extends StatelessWidget {
                                 height: 18.0,
                               ),
                               Text(
-                                "Join the Ultimate Gaming Network!",
+                                "Become our Partners!",
                                 style: GoogleFonts.pixelifySans(fontSize: 36),
                               ),
                               const SizedBox(
@@ -116,7 +116,7 @@ class SignupPage extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(right: 42.0),
                                 child: Text(
-                                  "Whether you're a gamer looking for the perfect spot or a lounge ready to host epic battles, you're just a step away from unlocking endless possibilities. Let’s get started!",
+                                  "Are you a gaming lounge ready to host epic battles and elevate the gaming experience? Take the next step to unlock endless possibilities for your venue. Become our partners!",
                                   style: GoogleFonts.roboto(fontSize: 20),
                                 ),
                               ),
@@ -173,7 +173,7 @@ class SignupPage extends StatelessWidget {
                                   InkWell(
                                     onTap: () {
                                       vm
-                                          .createAccountWithEmail(isPartner)
+                                          .createAccountWithEmail(true)
                                           .then((appUser) {
                                         if (appUser == null) {
                                           return;
@@ -234,9 +234,7 @@ class SignupPage extends StatelessWidget {
                               const SizedBox(height: 12.0),
                               InkWell(
                                 onTap: () {
-                                  vm
-                                      .signUpWithGoogle(isPartner)
-                                      .then((appUser) {
+                                  vm.signUpWithGoogle(true).then((appUser) {
                                     if (appUser == null) {
                                       return;
                                     }

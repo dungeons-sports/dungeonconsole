@@ -49,4 +49,9 @@ class VMDashboard extends ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> signOut() async {
+    await locator.get<AuthenticationService>().logout();
+    return true;
+  }
 }

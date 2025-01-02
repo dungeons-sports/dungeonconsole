@@ -7,6 +7,7 @@ class BorderDropDown extends StatefulWidget {
   final double? width;
   final double? height;
   final Function(String) onChanged;
+  final String? initialValue;
 
   const BorderDropDown({
     super.key,
@@ -14,6 +15,7 @@ class BorderDropDown extends StatefulWidget {
     required this.labelText,
     this.width = 250,
     this.height = 60,
+    this.initialValue,
     required this.onChanged,
   });
 
@@ -25,19 +27,29 @@ class _BorderDropDownState extends State<BorderDropDown> {
   String? _selectedBorder;
 
   @override
+  void initState() {
+    if(widget.initialValue != null){
+      _selectedBorder = widget.initialValue;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: widget.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            widget.labelText,
-            style: GoogleFonts.roboto(fontSize: 18.0, color: Colors.white),
-          ),
-          const SizedBox(
-            height: 8.0,
-          ),
+          if (widget.labelText != "") ...[
+            Text(
+              widget.labelText,
+              style: GoogleFonts.roboto(fontSize: 18.0, color: Colors.white),
+            ),
+            const SizedBox(
+              height: 8.0,
+            ),
+          ],
           DropdownButtonFormField<String>(
             decoration: const InputDecoration(
               labelText: "Select",
@@ -51,7 +63,7 @@ class _BorderDropDownState extends State<BorderDropDown> {
               );
             }).toList(),
             onChanged: (String? newValue) {
-              widget.onChanged(newValue??"");
+              widget.onChanged(newValue ?? "");
               setState(() {
                 _selectedBorder = newValue;
               });
