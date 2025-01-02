@@ -1,8 +1,7 @@
-import 'package:dungeonconsole/models/modelConsole/model.console.dart';
 import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabCreateBooking/vm.createBooking.dart';
 import 'package:dungeonconsole/pages/Dashboard/vm.dashboard.dart';
 import 'package:dungeonconsole/widgets/widget.borderDropdown.dart';
-import 'package:dungeonconsole/widgets/widget.selectableChip.dart';
+import 'package:dungeonconsole/widgets/widget.categoryTabs.dart';
 import 'package:dungeonconsole/widgets/widget.stackContainer.dart';
 import 'package:dungeonconsole/widgets/widget.timeSelectorButton.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,10 @@ class CreateBookingTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
+    return ChangeNotifierProvider(
+      create: (_) => VMCreateBooking(),
+      builder: (context, child) {
+        return Container(
         color: Colors.grey[900],
         padding: const EdgeInsets.all(18.0),
         child: Consumer<VMCreateBooking>(builder: (context, vm, details) {
@@ -47,7 +49,7 @@ class CreateBookingTab extends StatelessWidget {
                         )
                       ],
                     );
-                  });
+                  },);
             });
           }
 
@@ -75,119 +77,11 @@ class CreateBookingTab extends StatelessWidget {
               Text("Select Console type",
                   style: GoogleFonts.roboto(fontSize: 18.0)),
               const SizedBox(height: 8.0),
-              Wrap(
-                runSpacing: 12.0,
-                spacing: 12.0,
-                children: [
-                  SelectableChip(
-                    onSelect: (value) {
-                      if (value) {
-                        vm.selectedCategory = ConsoleCategory.pc;
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/icons/monitor.png',
-                          height: 25,
-                        ),
-                        const SizedBox(width: 10.0),
-                        const Text("PC")
-                      ],
-                    ),
-                  ),
-                  SelectableChip(
-                    onSelect: (value) {
-                      if (value) {
-                        vm.selectedCategory = ConsoleCategory.ps;
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/icons/playstation-logotype.png',
-                          height: 25,
-                        ),
-                        const SizedBox(width: 10.0),
-                        const Text("PS")
-                      ],
-                    ),
-                  ),
-                  SelectableChip(
-                    onSelect: (value) {
-                      if (value) {
-                        vm.selectedCategory = ConsoleCategory.xbox;
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/icons/xbox-logo.png',
-                          height: 25,
-                        ),
-                        const SizedBox(width: 10.0),
-                        const Text("XBox")
-                      ],
-                    ),
-                  ),
-                  SelectableChip(
-                    onSelect: (value) {
-                      if (value) {
-                        vm.selectedCategory = ConsoleCategory.vr;
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/icons/virtual-reality-glasses.png',
-                          height: 25,
-                        ),
-                        const SizedBox(width: 10.0),
-                        const Text("VR")
-                      ],
-                    ),
-                  ),
-                  SelectableChip(
-                    onSelect: (value) {
-                      if (value) {
-                        vm.selectedCategory = ConsoleCategory.streaming;
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.play_arrow,
-                          color: Colors.grey[200],
-                        ),
-                        const SizedBox(width: 10.0),
-                        const Text("Streaming")
-                      ],
-                    ),
-                  ),
-                  SelectableChip(
-                    onSelect: (value) {
-                      if (value) {
-                        vm.selectedCategory = ConsoleCategory.simRacing;
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/icons/fast.png',
-                          height: 25,
-                        ),
-                        const SizedBox(width: 10.0),
-                        const Text("Sim Racing")
-                      ],
-                    ),
-                  ),
-                ],
+              CategotyTabWidget(
+                availableCategories: dashvm.availableCategories,
+                onChanged: (index) {
+                  vm.setSelectedCategory(index);
+                },
               ),
               const SizedBox(
                 height: 12.0,
@@ -246,5 +140,7 @@ class CreateBookingTab extends StatelessWidget {
             ],
           );
         }));
+      },
+    );
   }
 }

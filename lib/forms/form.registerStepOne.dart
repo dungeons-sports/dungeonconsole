@@ -42,32 +42,28 @@ class RegisterStepOne extends StatelessWidget {
           hintText: "Full name of the cafe",
           controller: vm.cafeNameController,
         ),
+        if (vm.isCafeNameError) ...[
+          const SizedBox(height: 8.0),
+          Text(vm.errorMessage,
+              style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+        ],
         const SizedBox(
           height: 16.0,
         ),
 
         // City and state.
-        Wrap(
-          spacing: 10.0,
-          runSpacing: 10.0,
-          children: [
-            BorderDropDown(
-              labelText: 'Select City',
-              onChanged: (value) {
-                vm.city = value;
-              },
-              items: vm.cities,
-            ),
-            const SizedBox(width: 20.0),
-            BorderDropDown(
-              labelText: 'Select State',
-              onChanged: (value) {
-                vm.state = value;
-              },
-              items: vm.states,
-            ),
-          ],
+        BorderDropDown(
+          labelText: 'Select City',
+          onChanged: (value) {
+            vm.city = value;
+          },
+          items: vm.cities,
         ),
+        if (vm.isCityError) ...[
+          const SizedBox(height: 8.0),
+          Text(vm.errorMessage,
+              style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+        ],
         const SizedBox(
           height: 16.0,
         ),
@@ -82,6 +78,11 @@ class RegisterStepOne extends StatelessWidget {
           hintText: "Owner's name",
           controller: vm.ownerNameController,
         ),
+        if (vm.isOwnerNameError) ...[
+          const SizedBox(height: 8.0),
+          Text(vm.errorMessage,
+              style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+        ],
         const SizedBox(
           height: 16.0,
         ),
@@ -96,7 +97,11 @@ class RegisterStepOne extends StatelessWidget {
           hintText: "Phone number",
           controller: vm.ownerPhoneController,
         ),
-
+        if (vm.isOwnerPhoneError) ...[
+          const SizedBox(height: 8.0),
+          Text(vm.errorMessage,
+              style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+        ],
         // END
         const SizedBox(
           height: 32.0,

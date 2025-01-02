@@ -1,3 +1,4 @@
+import 'package:dungeonconsole/helpers/helper.timeExt.dart';
 import 'package:dungeonconsole/pages/PartnerWithUs/vm.partnerWithUs.dart';
 import 'package:dungeonconsole/widgets/widget.borderDropdown.dart';
 import 'package:dungeonconsole/widgets/widget.borderTextField.dart';
@@ -25,6 +26,11 @@ class RegisterStepThree extends StatelessWidget {
         BorderedTextField(
             hintText: "Google Maps Location",
             controller: vm.getGoogleMapsController),
+        if (vm.isGoogleMapsError) ...[
+          const SizedBox(height: 8.0),
+          Text(vm.errorMessage,
+              style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+        ],
         const SizedBox(
           height: 16.0,
         ),
@@ -38,6 +44,11 @@ class RegisterStepThree extends StatelessWidget {
         BorderedTextField(
             hintText: "Valorant, FIFA ...",
             controller: vm.getTopGamesController),
+        if (vm.isTopGameError) ...[
+          const SizedBox(height: 8.0),
+          Text(vm.errorMessage,
+              style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+        ],
         const SizedBox(
           height: 16.0,
         ),
@@ -132,11 +143,20 @@ class RegisterStepThree extends StatelessWidget {
             runSpacing: 20.0,
             children: [
               TimeSelectorButton(
-                  labelText: "Opening time", onTimeSelect: (time) {}),
+                  labelText: "Opening time", onTimeSelect: (time) {
+                    vm.openTime = time.getDisplayTime();
+                  }),
               TimeSelectorButton(
-                  labelText: "Closing time", onTimeSelect: (time) {}),
+                  labelText: "Closing time", onTimeSelect: (time) {
+                    vm.closeTime = time.getDisplayTime();
+                  }),
             ],
           ),
+          if (vm.isOpeningTimeError || vm.isClosingTimeError) ...[
+            const SizedBox(height: 8.0),
+            Text(vm.errorMessage,
+                style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+          ],
         ],
         const SizedBox(
           height: 32.0,

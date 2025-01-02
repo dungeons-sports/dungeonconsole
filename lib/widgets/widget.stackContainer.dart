@@ -19,11 +19,14 @@ class StackedContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-              color: Colors.grey[900], border: Border.all(color: Colors.white)),
+        Padding(
+          padding: EdgeInsets.only(bottom: containerSpacing),
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+                color: Colors.grey[900], border: Border.all(color: Colors.white)),
+          ),
         ),
         Padding(
           padding:

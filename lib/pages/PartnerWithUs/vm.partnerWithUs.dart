@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dungeonconsole/helpers/helper.docId.dart';
 import 'package:dungeonconsole/main.dart';
 import 'package:dungeonconsole/models/modelCafe/model.cafe.dart';
@@ -11,6 +12,149 @@ class VMPartnerWithUs extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   Cafe cafeDetails = const Cafe.empty();
+
+  bool _isStepOneSuccess = false;
+  bool _isStepTwoSuccess = false;
+  bool _isStepThreeSuccess = false;
+
+  bool get isStepOneSuccess => _isStepOneSuccess;
+  bool get isStepTwoSuccess => _isStepTwoSuccess;
+  bool get isStepThreeSuccess => _isStepThreeSuccess;
+
+  bool _showErrorSnackbar = false;
+  bool get showErrorSnackbar => _showErrorSnackbar;
+
+  String _errorMessage = "";
+  String get errorMessage => _errorMessage;
+
+  bool _isCafeNameError = false;
+  bool _isOwnerNameError = false;
+  bool _isOwnerPhoneError = false;
+  bool _isCityError = false;
+  bool _isDeviceSelectedError = false;
+  bool _isPcCountError = false;
+  bool _isPcAmountError = false;
+  bool _isPsCountError = false;
+  bool _isPsAmountError = false;
+  bool _isVrCountError = false;
+  bool _isVrAmountError = false;
+  bool _isXboxCountError = false;
+  bool _isXboxAmountError = false;
+  bool _isStreamingCountError = false;
+  bool _isStreamingAmountError = false;
+  bool _isSimRacingCountError = false;
+  bool _isSimRacingAmountError = false;
+  bool _isTopGameError = false;
+  bool _isGoogleMapsError = false;
+  bool _isOpeningTimeError = false;
+  bool _isClosingTimeError = false;
+
+  bool get isCafeNameError => _isCafeNameError;
+  bool get isOwnerNameError => _isOwnerNameError;
+  bool get isOwnerPhoneError => _isOwnerPhoneError;
+  bool get isCityError => _isCityError;
+  bool get isDeviceSelectedError => _isDeviceSelectedError;
+  bool get isPcCountError => _isPcCountError;
+  bool get isPcAmountError => _isPcAmountError;
+  bool get isPsCountError => _isPsCountError;
+  bool get isPsAmountError => _isPsAmountError;
+  bool get isVrCountError => _isVrCountError;
+  bool get isVrAmountError => _isVrAmountError;
+  bool get isXboxCountError => _isXboxCountError;
+  bool get isXboxAmountError => _isXboxAmountError;
+  bool get isStreamingCountError => _isStreamingCountError;
+  bool get isStreamingAmountError => _isStreamingAmountError;
+  bool get isSimRacingCountError => _isSimRacingCountError;
+  bool get isSimRacingAmountError => _isSimRacingAmountError;
+  bool get isTopGameError => _isTopGameError;
+  bool get isGoogleMapsError => _isGoogleMapsError;
+  bool get isOpeningTimeError => _isOpeningTimeError;
+  bool get isClosingTimeError => _isClosingTimeError;
+
+  set isCafeNameError(bool value) {
+    _isCafeNameError = value;
+    notifyListeners();
+  }
+
+  set isOwnerNameError(bool value) {
+    _isOwnerNameError = value;
+    notifyListeners();
+  }
+
+  set isOwnerPhoneError(bool value) {
+    _isOwnerPhoneError = value;
+    notifyListeners();
+  }
+
+  set isPcCountError(bool value) {
+    _isPcCountError = value;
+    notifyListeners();
+  }
+
+  set isPcAmountError(bool value) {
+    _isPcAmountError = value;
+    notifyListeners();
+  }
+
+  set isPsCountError(bool value) {
+    _isPsCountError = value;
+    notifyListeners();
+  }
+
+  set isPsAmountError(bool value) {
+    _isPsAmountError = value;
+    notifyListeners();
+  }
+
+  set isVrCountError(bool value) {
+    _isVrCountError = value;
+    notifyListeners();
+  }
+
+  set isVrAmountError(bool value) {
+    _isVrAmountError = value;
+    notifyListeners();
+  }
+
+  set isXboxCountError(bool value) {
+    _isXboxCountError = value;
+    notifyListeners();
+  }
+
+  set isXboxAmountError(bool value) {
+    _isXboxAmountError = value;
+    notifyListeners();
+  }
+
+  set isStreamingCountError(bool value) {
+    _isStreamingCountError = value;
+    notifyListeners();
+  }
+
+  set isStreamingAmountError(bool value) {
+    _isStreamingAmountError = value;
+    notifyListeners();
+  }
+
+  set isSimRacingCountError(bool value) {
+    _isSimRacingCountError = value;
+    notifyListeners();
+  }
+
+  set isSimRacingAmountError(bool value) {
+    _isSimRacingAmountError = value;
+    notifyListeners();
+  }
+
+  set isTopGameError(bool value) {
+    _isTopGameError = value;
+    notifyListeners();
+  }
+
+  set isGoogleMapsError(bool value) {
+    _isGoogleMapsError = value;
+    notifyListeners();
+  }
 
   final TextEditingController cafeNameController = TextEditingController();
   final TextEditingController ownerNameController = TextEditingController();
@@ -94,10 +238,9 @@ class VMPartnerWithUs extends ChangeNotifier {
 
   List<String> yn = ["Yes", "No"];
 
-  String _openTimeUTC = 'TBD';
-  String _closeTimeUTC = 'TBD';
+  String _openTime = '';
+  String _closeTime = '';
   String _city = '';
-  String _state = '';
 
   bool _isPSConsoleAvailable = false;
   bool _isPCAvailable = false;
@@ -224,21 +367,15 @@ class VMPartnerWithUs extends ChangeNotifier {
     notifyListeners();
   }
 
-  String get state => _state;
-  set state(String value) {
-    _state = value;
+  String get openTime => _openTime;
+  set openTime(String value) {
+    _openTime = value;
     notifyListeners();
   }
 
-  String get openTimeUTC => _openTimeUTC;
-  set openTimeUTC(String value) {
-    _openTimeUTC = value;
-    notifyListeners();
-  }
-
-  String get closeTimeUTC => _closeTimeUTC;
-  set closeTimeUTC(String value) {
-    _closeTimeUTC = value;
+  String get closeTime => _closeTime;
+  set closeTime(String value) {
+    _closeTime = value;
     notifyListeners();
   }
 
@@ -288,13 +425,68 @@ class VMPartnerWithUs extends ChangeNotifier {
     AppUser? user = await locator.get<AuthenticationService>().getCurrentUser();
     if (user != null) {
       if (user.cafeId != null && user.cafeId != "") {
-        cafeDetails =
-            await locator.get<FirestoreService>().getCafeRecord(user.cafeId!);
-        _currentStep = cafeDetails.registerStep;
-        notifyListeners();
+        try {
+          cafeDetails =
+              await locator.get<FirestoreService>().getCafeRecord(user.cafeId!);
+          _currentStep = cafeDetails.registerStep;
+          notifyListeners();
+        } catch (e) {
+          // Do nothing.
+        }
       }
     }
     return !(user == null);
+  }
+
+  bool validateSubmitFields() {
+    bool isValid = true;
+
+    if (cafeNameController.text.isEmpty) {
+      isCafeNameError = true;
+      isValid = false;
+      _errorMessage = "Cafe Name cannot be empty";
+      notifyListeners();
+      return isValid;
+    } else {
+      isCafeNameError = false;
+    }
+
+    if (_city.isEmpty) {
+      _isCityError = true;
+      isValid = false;
+      _errorMessage = "City cannot be empty";
+      notifyListeners();
+      return isValid;
+    } else {
+      _isCityError = false;
+    }
+
+    if (ownerNameController.text.isEmpty) {
+      isOwnerNameError = true;
+      isValid = false;
+      _errorMessage = "Owner Name cannot be empty";
+      notifyListeners();
+      return isValid;
+    } else {
+      isOwnerNameError = false;
+    }
+
+    if (ownerPhoneController.text.isEmpty) {
+      _errorMessage = "Phone number cannot be empty";
+      isOwnerPhoneError = true;
+      isValid = false;
+    } else if (ownerPhoneController.text.length != 10) {
+      _errorMessage = "Invalid Phone number";
+      isOwnerPhoneError = true;
+      isValid = false;
+      notifyListeners();
+      return isValid;
+    } else {
+      isOwnerPhoneError = false;
+    }
+
+    notifyListeners();
+    return isValid;
   }
 
   Future<void> submit() async {
@@ -302,8 +494,7 @@ class VMPartnerWithUs extends ChangeNotifier {
       return;
     }
 
-    if (_city.isEmpty || _state.isEmpty) {
-      // Handle validation error
+    if (!validateSubmitFields()) {
       return;
     }
 
@@ -320,7 +511,6 @@ class VMPartnerWithUs extends ChangeNotifier {
         ownerPhone: ownerPhoneController.text,
         cafeName: cafeNameController.text,
         city: _city,
-        state: _state,
         registerStep: 1,
         tsCreated: DateTime.now().toIso8601String().toString(),
         tsUpdated: DateTime.now().toIso8601String().toString(),
@@ -333,12 +523,15 @@ class VMPartnerWithUs extends ChangeNotifier {
         await locator
             .get<FirestoreService>()
             .createCafeRecord(cafeDetails, user.id);
+        _isStepOneSuccess = true;
       }
 
       _isLoading = false;
       notifyListeners();
-    } catch (e) {
-      print(e);
+    } on FirebaseException catch (_) {
+      _errorMessage = "Something went wrong";
+      _showErrorSnackbar = true;
+      notifyListeners();
     }
   }
 
@@ -349,7 +542,7 @@ class VMPartnerWithUs extends ChangeNotifier {
       _consoles.add(
         Console(
           type: category,
-          name: '${category.name}_${i+1}',
+          name: '${category.name}_${i + 1}',
           consoleId: 'console_$consoleId',
           multiplayer: false,
           cost: cost,
@@ -360,10 +553,176 @@ class VMPartnerWithUs extends ChangeNotifier {
     }
   }
 
+  bool validateSubmitInventoryInfo() {
+    bool isValid = true;
+
+    if (_availableConsoles.isEmpty) {
+      _errorMessage = "Please select a device.";
+      _isDeviceSelectedError = true;
+      isValid = false;
+      notifyListeners();
+      return isValid;
+    } else {
+      _isDeviceSelectedError = false;
+    }
+
+    if (_isPCAvailable) {
+      if (pcCountController.text.isEmpty ||
+          int.tryParse(pcCountController.text) == null) {
+        _isPcCountError = true;
+        _errorMessage = "PC count is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isPcCountError = false;
+      }
+
+      if (pcAmountController.text.isEmpty ||
+          double.tryParse(pcAmountController.text) == null) {
+        _isPcAmountError = true;
+        _errorMessage = "PC amount is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isPcAmountError = false;
+      }
+    }
+
+    if (_isPSConsoleAvailable) {
+      if (psCountController.text.isEmpty ||
+          int.tryParse(psCountController.text) == null) {
+        _isPsCountError = true;
+        _errorMessage = "PS count is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isPsCountError = false;
+      }
+
+      if (psAmountController.text.isEmpty ||
+          double.tryParse(psAmountController.text) == null) {
+        _isPsAmountError = true;
+        _errorMessage = "PS amount is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isPsAmountError = false;
+      }
+    }
+
+    if (_isVRAvailable) {
+      if (vrCountController.text.isEmpty ||
+          int.tryParse(vrCountController.text) == null) {
+        _isVrCountError = true;
+        _errorMessage = "VR count is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isVrCountError = false;
+      }
+
+      if (vrAmountController.text.isEmpty ||
+          double.tryParse(vrAmountController.text) == null) {
+        _isVrAmountError = true;
+        _errorMessage = "VR amount is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isVrAmountError = false;
+      }
+    }
+
+    if (_isXboxAvailable) {
+      if (xboxCountController.text.isEmpty ||
+          int.tryParse(xboxCountController.text) == null) {
+        _isXboxCountError = true;
+        _errorMessage = "Xbox count is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isXboxCountError = false;
+      }
+
+      if (xboxAmountController.text.isEmpty ||
+          double.tryParse(xboxAmountController.text) == null) {
+        _isXboxAmountError = true;
+        _errorMessage = "Xbox amount is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isXboxAmountError = false;
+      }
+    }
+
+    if (_isStreamingAvailable) {
+      if (streamingCountController.text.isEmpty ||
+          int.tryParse(streamingCountController.text) == null) {
+        _isStreamingCountError = true;
+        _errorMessage = "Streaming count is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isStreamingCountError = false;
+      }
+
+      if (streamingAmountController.text.isEmpty ||
+          double.tryParse(streamingAmountController.text) == null) {
+        _isStreamingAmountError = true;
+        _errorMessage = "Streaming amount is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isStreamingAmountError = false;
+      }
+    }
+
+    if (_isSimRacingAvailable) {
+      if (simRacingCountController.text.isEmpty ||
+          int.tryParse(simRacingCountController.text) == null) {
+        _isSimRacingCountError = true;
+        _errorMessage = "Sim Racing count is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isSimRacingCountError = false;
+      }
+
+      if (simRacingAmountController.text.isEmpty ||
+          double.tryParse(simRacingAmountController.text) == null) {
+        _isSimRacingAmountError = true;
+        _errorMessage = "Sim Racing amount is invalid";
+        isValid = false;
+        notifyListeners();
+        return isValid;
+      } else {
+        _isSimRacingAmountError = false;
+      }
+    }
+
+    notifyListeners();
+    return isValid;
+  }
+
   Future<void> submitInventoryInfo() async {
     if (_isLoading) {
       return;
     }
+
+    if (!validateSubmitInventoryInfo()) {
+      return;
+    }
+
     try {
       _isLoading = true;
       notifyListeners();
@@ -406,26 +765,79 @@ class VMPartnerWithUs extends ChangeNotifier {
       }
 
       final firestoreService = locator.get<FirestoreService>();
-      await firestoreService.createConsoleRecord(
-          _consoles, cafeDetails.id);
+      await firestoreService.createConsoleRecord(_consoles, cafeDetails.id);
 
       await firestoreService.updateCafeRecord(cafeDetails.copyWith(
           registerStep: 2, tsUpdated: DateTime.now().toIso8601String()));
 
+      _isStepTwoSuccess = true;
       _isLoading = false;
       notifyListeners();
     } catch (e) {
+      _errorMessage = "Something went wrong.";
       _isLoading = false;
+      _showErrorSnackbar = true;
       notifyListeners();
-      print(e);
     }
 
     _isLoading = false;
     notifyListeners();
   }
 
-  void submitFinal() async {
+  bool validateSubmitFinal() {
+    bool isValid = true;
+
+    if (googleMapsController.text.isEmpty) {
+      _isGoogleMapsError = true;
+      _errorMessage = "Google Maps link cannot be empty";
+      isValid = false;
+      notifyListeners();
+      return isValid;
+    } else {
+      _isGoogleMapsError = false;
+    }
+
+    if (topGameController.text.isEmpty) {
+      _isTopGameError = true;
+      _errorMessage = "Top games cannot be empty";
+      isValid = false;
+      notifyListeners();
+      return isValid;
+    } else {
+      _isTopGameError = false;
+    }
+
+    if (!_isAlwaysOpen) {
+      if (_openTime.isEmpty) {
+        isValid = false;
+        _isOpeningTimeError = true;
+        _errorMessage = "Please Select Opening time";
+        notifyListeners();
+        return isValid;
+      } else {
+        _isOpeningTimeError = false;
+      }
+      if (_closeTime.isEmpty) {
+        isValid = false;
+        _isClosingTimeError = true;
+        _errorMessage = "Please Select Closing time";
+        notifyListeners();
+        return isValid;
+      } else {
+        _isClosingTimeError = false;
+      }
+    }
+
+    notifyListeners();
+    return isValid;
+  }
+
+  Future<void> submitFinal() async {
     if (_isLoading) {
+      return;
+    }
+
+    if (!validateSubmitFinal()) {
       return;
     }
 
@@ -435,8 +847,8 @@ class VMPartnerWithUs extends ChangeNotifier {
 
       Cafe updatedCafeDetails = cafeDetails.copyWith(
         tsUpdated: DateTime.now().toIso8601String().toString(),
-        openTimeUTC: _openTimeUTC,
-        closeTimeUTC: _closeTimeUTC,
+        openTimeUTC: _openTime,
+        closeTimeUTC: _closeTime,
         isGamingChair: _isGamingChair,
         isWashroom: _isWashroom,
         isAC: _isAC,
@@ -452,13 +864,36 @@ class VMPartnerWithUs extends ChangeNotifier {
       await locator
           .get<FirestoreService>()
           .updateCafeRecord(updatedCafeDetails);
-
+      _isStepThreeSuccess = true;
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      print(e);
+      _errorMessage = "Something went wrong.";
+      _isLoading = false;
+      _showErrorSnackbar = true;
+      notifyListeners();
     }
+  }
 
+  void resetErrors() {
+    _isCafeNameError = false;
+    _isOwnerNameError = false;
+    _isOwnerPhoneError = false;
+    _isPcCountError = false;
+    _isPcAmountError = false;
+    _isPsCountError = false;
+    _isPsAmountError = false;
+    _isVrCountError = false;
+    _isVrAmountError = false;
+    _isXboxCountError = false;
+    _isXboxAmountError = false;
+    _isStreamingCountError = false;
+    _isStreamingAmountError = false;
+    _isSimRacingCountError = false;
+    _isSimRacingAmountError = false;
+    _isTopGameError = false;
+    _isGoogleMapsError = false;
+    _errorMessage = "";
     notifyListeners();
   }
 

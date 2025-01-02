@@ -1,6 +1,7 @@
 import 'package:dungeonconsole/helpers/helper.navigationRoutes.dart';
 import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabCreateBooking/tab.createBooking.dart';
 import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabUpcomingBooking/tab.upcomingBookings.dart';
+import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabViewAllBooking/tab.viewAllBooking.dart';
 // import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabUpdateConsole/tab.updateConsole.dart';
 import 'package:dungeonconsole/pages/Dashboard/vm.dashboard.dart';
 import 'package:dungeonconsole/widgets/widget.stackContainer.dart';
@@ -51,7 +52,7 @@ class DashboardPage extends StatelessWidget {
                       child: StackedContainer(
                         width: 300,
                         height: size.height,
-                        fillColor: Colors.black,
+                        fillColor: Colors.grey[900],
                         padding: const EdgeInsets.all(12.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -83,7 +84,9 @@ class DashboardPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            const Divider(),
+                            const Divider(
+                              color: Colors.white,
+                            ),
                             ListTile(
                               title: const Text("Create booking"),
                               subtitle: const Text(
@@ -124,17 +127,17 @@ class DashboardPage extends StatelessWidget {
                             //     vm.currentTab = 3;
                             //   },
                             // ),
-                            const Spacer(),
-                            ListTile(
-                              title: const Text("Settings"),
-                              subtitle: const Text(
-                                "Manage and update listing information",
-                              ),
-                              contentPadding: const EdgeInsets.all(0.0),
-                              onTap: () {
-                                vm.currentTab = 4;
-                              },
-                            ),
+                            // const Spacer(),
+                            // ListTile(
+                            //   title: const Text("Settings"),
+                            //   subtitle: const Text(
+                            //     "Manage and update listing information",
+                            //   ),
+                            //   contentPadding: const EdgeInsets.all(0.0),
+                            //   onTap: () {
+                            //     vm.currentTab = 4;
+                            //   },
+                            // ),
                           ],
                         ),
                       ),
@@ -150,6 +153,11 @@ class DashboardPage extends StatelessWidget {
                           vmdash: vm,
                         ),
                       ),
+                    if (vm.currentTab == 2)
+                      Expanded(
+                          child: ViewAllBookingTab(
+                        vmdash: vm,
+                      )),
                     // if (vm.currentTab == 3)
                     //   Expanded(
                     //       child: UpdateConsoleTab(

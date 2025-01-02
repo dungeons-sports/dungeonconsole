@@ -12,7 +12,6 @@ class Cafe extends Equatable {
   final String ownerPhone;
   final String cafeName;
   final String city;
-  final String state;
 
   // Step three
   final bool isGamingChair;
@@ -39,7 +38,6 @@ class Cafe extends Equatable {
     required this.ownerPhone,
     required this.cafeName,
     required this.city,
-    required this.state,
     required this.googleMapsLink,
     required this.topGames,
     required this.isGamingChair,
@@ -67,7 +65,6 @@ class Cafe extends Equatable {
         ownerPhone = '',
         cafeName = '',
         city = '',
-        state = '',
         googleMapsLink = '',
         topGames = '',
         isGamingChair = false,
@@ -114,7 +111,6 @@ class Cafe extends Equatable {
       ownerPhone: ownerPhone ?? this.ownerPhone,
       cafeName: cafeName ?? this.cafeName,
       city: city ?? this.city,
-      state: state ?? this.state,
       googleMapsLink: googleMapsLink ?? this.googleMapsLink,
       topGames: topGames ?? this.topGames,
       isGamingChair: isGamingChair ?? this.isGamingChair,
@@ -140,7 +136,6 @@ class Cafe extends Equatable {
         ownerPhone,
         cafeName,
         city,
-        state,
         isGamingChair,
         isWashroom,
         isAC,

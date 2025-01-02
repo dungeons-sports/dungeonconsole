@@ -13,6 +13,7 @@ class VMDashboard extends ChangeNotifier {
   AppUser? appUser;
   Cafe? cafeDetails;
   List<Console> listedConsoles = [];
+  List<ConsoleCategory> availableCategories = [];
 
   set currentTab(int value) {
     if (value != _currentTab) {
@@ -34,6 +35,11 @@ class VMDashboard extends ChangeNotifier {
         // Fetch the Cafe details
         cafeDetails = await locator.get<FirestoreService>().getCafeRecord(appUser!.cafeId!);
         listedConsoles = await locator.get<FirestoreService>().getListedConsoles(appUser!.cafeId!)??[];
+        for (Console console in listedConsoles) {
+          if (!availableCategories.contains(console.type)) {
+            availableCategories.add(console.type);
+          }
+        }
         notifyListeners();
         return true;  
       }

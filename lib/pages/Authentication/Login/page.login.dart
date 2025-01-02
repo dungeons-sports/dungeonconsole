@@ -65,6 +65,22 @@ class LoginPage extends StatelessWidget {
                         horizontal: 18.0, vertical: 28.0),
                     child: SingleChildScrollView(child:
                         Consumer<VMLogin>(builder: (context, vm, detail) {
+                      if (vm.onLoginError) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+                                SnackBar(
+                                  content: Text(vm.loginErrorMessage),
+                                  backgroundColor: Colors.red,
+                                ),
+                              )
+                              .closed
+                              .then((_) {
+                            vm.clearLoginErrorMessage();
+                          });
+                        });
+                      }
+
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,6 +118,12 @@ class LoginPage extends StatelessWidget {
                           BorderedTextField(
                               hintText: 'Email ID',
                               controller: vm.emailController),
+                          if (!vm.isEmailValid) ...[
+                            const SizedBox(height: 8.0),
+                            Text(vm.emailErrorMessage,
+                                style: GoogleFonts.roboto(
+                                    fontSize: 14.0, color: Colors.red))
+                          ],
                           const SizedBox(
                             height: 16.0,
                           ),
@@ -117,6 +139,12 @@ class LoginPage extends StatelessWidget {
                               hintText: 'Password',
                               isObscured: true,
                               controller: vm.passwordController),
+                          if (!vm.isPasswordValid) ...[
+                            const SizedBox(height: 8.0),
+                            Text(vm.passwordErrorMessage,
+                                style: GoogleFonts.roboto(
+                                    fontSize: 14.0, color: Colors.red))
+                          ],
                           const SizedBox(height: 32.0),
                           Wrap(
                             spacing: 20.0,

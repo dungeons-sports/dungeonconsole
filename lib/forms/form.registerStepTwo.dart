@@ -175,7 +175,15 @@ class RegisterStepTwo extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16.0,),
+        const SizedBox(height: 8.0),
+        if (vm.isDeviceSelectedError) ...[
+          const SizedBox(height: 8.0),
+          Text(vm.errorMessage,
+              style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+        ],
+        const SizedBox(
+          height: 16.0,
+        ),
         if (vm.isPCAvailable) ...[
           Text(
             "How many PC systems do you have?",
@@ -186,6 +194,11 @@ class RegisterStepTwo extends StatelessWidget {
           ),
           BorderedTextField(
               hintText: "Number of PCs", controller: vm.getPcCountController),
+          if (vm.isPcCountError) ...[
+            const SizedBox(height: 8.0),
+            Text(vm.errorMessage,
+                style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+          ],
           const SizedBox(
             height: 16.0,
           ),
@@ -199,6 +212,11 @@ class RegisterStepTwo extends StatelessWidget {
           BorderedTextField(
               hintText: "Amount per Hour",
               controller: vm.getPcAmountController),
+          if (vm.isPcAmountError) ...[
+            const SizedBox(height: 8.0),
+            Text(vm.errorMessage,
+                style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+          ],
           const SizedBox(
             height: 16.0,
           ),
@@ -214,6 +232,11 @@ class RegisterStepTwo extends StatelessWidget {
           BorderedTextField(
               hintText: "Number of play-stations",
               controller: vm.psCountController),
+          if (vm.isPsCountError) ...[
+            const SizedBox(height: 8.0),
+            Text(vm.errorMessage,
+                style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+          ],
           const SizedBox(
             height: 16.0,
           ),
@@ -228,6 +251,11 @@ class RegisterStepTwo extends StatelessWidget {
             hintText: "Amount per Hour",
             controller: vm.psAmountController,
           ),
+          if (vm.isPsAmountError) ...[
+            const SizedBox(height: 8.0),
+            Text(vm.errorMessage,
+                style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+          ],
           const SizedBox(
             height: 16.0,
           ),
@@ -244,6 +272,11 @@ class RegisterStepTwo extends StatelessWidget {
             hintText: "Number of Xboxes",
             controller: vm.xboxCountController,
           ),
+          if (vm.isXboxCountError) ...[
+            const SizedBox(height: 8.0),
+            Text(vm.errorMessage,
+                style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+          ],
           const SizedBox(
             height: 16.0,
           ),
@@ -258,6 +291,11 @@ class RegisterStepTwo extends StatelessWidget {
             hintText: "Amount per Hour",
             controller: vm.xboxAmountController,
           ),
+          if (vm.isXboxAmountError) ...[
+            const SizedBox(height: 8.0),
+            Text(vm.errorMessage,
+                style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+          ],
           const SizedBox(
             height: 16.0,
           ),
@@ -274,6 +312,11 @@ class RegisterStepTwo extends StatelessWidget {
             hintText: "Number of simulation sets",
             controller: vm.simRacingCountController,
           ),
+          if (vm.isSimRacingCountError) ...[
+            const SizedBox(height: 8.0),
+            Text(vm.errorMessage,
+                style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+          ],
           const SizedBox(
             height: 16.0,
           ),
@@ -288,6 +331,11 @@ class RegisterStepTwo extends StatelessWidget {
             hintText: "Amount per Hour",
             controller: vm.simRacingAmountController,
           ),
+          if (vm.isSimRacingAmountError) ...[
+            const SizedBox(height: 8.0),
+            Text(vm.errorMessage,
+                style: GoogleFonts.roboto(fontSize: 14.0, color: Colors.red))
+          ],
         ],
         const SizedBox(
           height: 32.0,

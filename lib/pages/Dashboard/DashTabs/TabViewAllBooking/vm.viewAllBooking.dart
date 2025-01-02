@@ -1,9 +1,9 @@
 import 'package:dungeonconsole/main.dart';
 import 'package:dungeonconsole/models/modelBooking/model.booking.dart';
 import 'package:dungeonconsole/services/service.firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
-class VMUpcomingBooking extends ChangeNotifier {
+class VMViewAllBooking extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
@@ -13,7 +13,16 @@ class VMUpcomingBooking extends ChangeNotifier {
   List<Booking> _upcomingBookings = [];
   List<Booking> get upcomingBookings => _upcomingBookings;
 
-  VMUpcomingBooking(String cafeId) {
+  String _date = DateTime.now().toIso8601String().split('T')[0];
+  String get date => _date;
+
+  void selectedDate(DateTime date, cafeId) {
+    _date = date.toIso8601String().split('T')[0];
+    fetchUpcomingBookings(cafeId);
+    notifyListeners();
+  }
+
+  VMViewAllBooking(String cafeId) {
     fetchUpcomingBookings(cafeId);
   }
 
@@ -27,20 +36,20 @@ class VMUpcomingBooking extends ChangeNotifier {
       notifyListeners();
       // Fetch upcoming bookings from Firestore
       final firestoreService = locator.get<FirestoreService>();
-      String date = DateTime.now().toIso8601String().split('T')[0];
+      
   
-      final upcomingBookings =
-          await firestoreService.getBookingsByDate(cafeId, date);
-      _upcomingBookings = upcomingBookings;
+      _upcomingBookings =
+          await firestoreService.getBookingsByDate(cafeId, _date);
 
       if(_upcomingBookings.isEmpty){
         _showNoResults = true;
+      } else {
+         _showNoResults = false;
       }
 
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      print('Error: $e');
       _isLoading = false;
       notifyListeners();
     }

@@ -1,6 +1,7 @@
 import 'package:dungeonconsole/main.dart';
 import 'package:dungeonconsole/models/modelUser/model.user.dart';
 import 'package:dungeonconsole/services/service.authentication.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class VMSignup extends ChangeNotifier {
@@ -10,20 +11,71 @@ class VMSignup extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  bool _isEmailValid = true;
+  bool _isPasswordValid = true;
+  bool _onLoginError = false;
+
   String _emailErrorMessage = "";
   String _passwordErrorMessage = "";
+  String _loginErrorMessage = "";
 
+  bool get isEmailValid => _isEmailValid;
+  bool get isPasswordValid => _isPasswordValid;
+  bool get onLoginError => _onLoginError;
   String get emailErrorMessage => _emailErrorMessage;
   String get passwordErrorMessage => _passwordErrorMessage;
+  String get loginErrorMessage => _loginErrorMessage;
 
   TextEditingController get emailController => _emailController;
   TextEditingController get passwordController => _passwordController;
 
-  bool _emailError = false;
-  bool _passwordError = false;
+  void clearLoginErrorMessage() {
+    _emailController.text = "";
+    _passwordController.text = "";
+    _emailErrorMessage = "";
+    _passwordErrorMessage = "";
+    _isEmailValid = true;
+    _isPasswordValid = true;
+    _loginErrorMessage = "";
+    _onLoginError = false;
+    notifyListeners();
+  }
 
-  bool get emailError => _emailError;
-  bool get passwordError => _passwordError;
+  bool? validate(String email, String password) {
+    if (email.isEmpty) {
+      _emailErrorMessage = "Cannot be empty";
+      _isEmailValid = false;
+      notifyListeners();
+      return null;
+    } else {
+      _isEmailValid = true;
+      notifyListeners();
+    }
+
+    // Validate email format using regex
+    final RegExp emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (!emailRegex.hasMatch(email)) {
+      _emailErrorMessage = "Invalid email format";
+      _isEmailValid = false;
+      notifyListeners();
+      return null;
+    } else {
+      _isEmailValid = true;
+      notifyListeners();
+    }
+
+    if (password.isEmpty) {
+      _passwordErrorMessage = "Cannot be empty";
+      _isPasswordValid = false;
+      notifyListeners();
+      return null;
+    } else {
+      _isPasswordValid = true;
+      notifyListeners();
+    }
+
+    return true;
+  }
 
   Future<AppUser?> createAccountWithEmail(bool isPartner) async {
     if (_isLoading) {
@@ -37,39 +89,26 @@ class VMSignup extends ChangeNotifier {
       final String email = _emailController.text;
       final String password = _passwordController.text;
 
-      _emailError = email.isEmpty;
-      _passwordError = password.isEmpty;
+      bool? isValid = validate(email, password);
 
-      if (_emailError) {
-        _emailErrorMessage = "Cannot be empty";
+      if (isValid != null && !isValid) {
+        final authService = locator.get<AuthenticationService>();
+        AppUser? appuser = await authService.signUpWithEmailPassword(
+            email, password, isPartner);
+
+        _isLoading = false;
         notifyListeners();
-        return null;
+
+        return appuser!;
       }
-
-      if (_passwordError) {
-        _passwordErrorMessage = "Cannot be empty";
-        notifyListeners();
-        return null;
-      }
-
-      final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-      if (!emailRegex.hasMatch(email)) {
-        _emailError = true;
-        _emailErrorMessage = "Invalid email format";
-        notifyListeners();
-        return null;
-      }
-
-      final authService = locator.get<AuthenticationService>();
-      AppUser? appuser =
-          await authService.signUpWithEmailPassword(email, password, isPartner);
-
       _isLoading = false;
       notifyListeners();
-
-      return appuser!;
-    } catch (e) {
-      print(e);
+      return null;
+    } on FirebaseAuthException catch (e) {
+       _onLoginError = true;
+      _loginErrorMessage = e.message!;
+      _isLoading = false;
+      notifyListeners();
       return null;
     }
   }
@@ -90,11 +129,11 @@ class VMSignup extends ChangeNotifier {
       notifyListeners();
 
       return appUser;
-    } catch (e) {
-      print(e);
+    } on FirebaseAuthException catch (e) {
+      _onLoginError = true;
+      _loginErrorMessage = e.message!;
       _isLoading = false;
       notifyListeners();
-
       return null;
     }
   }

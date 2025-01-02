@@ -53,7 +53,9 @@ class _BookingTableState extends State<BookingTable> {
           stream: _timeStream,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
+              return const SizedBox(
+                height: 350.0,
+                child: Center(child: CircularProgressIndicator.adaptive()));
             }
             final now = snapshot.data!;
 

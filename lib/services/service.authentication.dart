@@ -33,8 +33,7 @@ class AuthenticationServiceImpl extends AuthenticationService {
           isPlayer: !isPartner);
       return appUser;
     } catch (e) {
-      print(e);
-      return null;
+      rethrow;
     }
   }
 
@@ -52,8 +51,7 @@ class AuthenticationServiceImpl extends AuthenticationService {
           .getUserRecord(userCredential.user!.uid);
       return appUser;
     } catch (e) {
-      print(e);
-      return null;
+      rethrow;
     }
   }
 
@@ -69,8 +67,7 @@ class AuthenticationServiceImpl extends AuthenticationService {
           .createUserRecord(user, isCafe: isPartner, isPlayer: !isPartner);
       return appuser;
     } catch (e) {
-      print(e);
-      return null;
+      rethrow;
     }
   }
 
@@ -85,8 +82,7 @@ class AuthenticationServiceImpl extends AuthenticationService {
           await locator.get<FirestoreService>().getUserRecord(user.uid);
       return appuser;
     } catch (e) {
-      print(e);
-      return null;
+      rethrow;
     }
   }
 
@@ -97,7 +93,7 @@ class AuthenticationServiceImpl extends AuthenticationService {
       await firebaseAuth.signOut();
       // await googleSignIn.signOut();
     } catch (e) {
-      print(e);
+      rethrow;
     }
   }
 
@@ -111,9 +107,10 @@ class AuthenticationServiceImpl extends AuthenticationService {
       } else {
         return null;
       }
-    } catch (e) {
-      print(e);
-      return null;
+    } on FirebaseException catch (_) {
+      rethrow;
+    } catch (e){
+      rethrow;
     }
   }
 }

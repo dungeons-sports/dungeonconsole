@@ -37,20 +37,43 @@ class VMCreateBooking extends ChangeNotifier {
   ];
 
   set selectedCategory(ConsoleCategory category) {
-    _selectedCategory = category;   
+    _selectedCategory = category;
     notifyListeners();
+  }
+
+  void setSelectedCategory(int index) {
+    switch (index) {
+      case 0:
+        selectedCategory = ConsoleCategory.pc;
+        break;
+      case 1:
+        selectedCategory = ConsoleCategory.ps;
+        break;
+      case 2:
+        selectedCategory = ConsoleCategory.xbox;
+        break;
+      case 3:
+        selectedCategory = ConsoleCategory.vr;
+        break;
+      case 4:
+        selectedCategory = ConsoleCategory.streaming;
+        break;
+      case 5:
+        selectedCategory = ConsoleCategory.simRacing;
+        break;
+    }
   }
 
   void updateSelectedStartTime(TimeOfDay? time) {
     _selectedStartTime = time;
   }
 
-  void updateDuration(String durationStr){
+  void updateDuration(String durationStr) {
     // Check if the selectedStartTime is not null.
     _selectedStartTime ??= TimeOfDay.now();
     _selectedDuration = int.parse(durationStr.split(" ")[0]);
   }
- 
+
   void createBooking(String cafeId) async {
     if (_isLoading) {
       return;
@@ -82,16 +105,18 @@ class VMCreateBooking extends ChangeNotifier {
         _endTime!.minute,
       ));
 
-      Booking? createdBooking = await locator.get<FirestoreService>().createBooking(cafeId, _selectedCategory,startTime, endTime);
+      Booking? createdBooking = await locator
+          .get<FirestoreService>()
+          .createBooking(cafeId, _selectedCategory, startTime, endTime);
 
-      if(createdBooking != null){
+      if (createdBooking != null) {
         _showBookingCompleteDialog = true;
       }
 
       _isLoading = false;
       notifyListeners();
 
-      Timer(const Duration(seconds: 2), (){
+      Timer(const Duration(seconds: 2), () {
         _showBookingCompleteDialog = false;
       });
     } catch (e) {

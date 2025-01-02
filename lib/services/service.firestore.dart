@@ -70,9 +70,10 @@ class FirestoreServiceImpl extends FirestoreService {
 
       await firestore.collection('users').doc(user.uid).set(appUser.toJson());
       return appUser;
+    } on FirebaseException catch (_) {
+      rethrow;
     } catch (e) {
-      print(e);
-      return null;
+      rethrow;
     }
   }
 
@@ -88,9 +89,10 @@ class FirestoreServiceImpl extends FirestoreService {
       } else {
         return null;
       }
+    } on FirebaseException catch (_) {
+      rethrow;
     } catch (e) {
-      print(e);
-      return null;
+      rethrow;
     }
   }
 
@@ -106,8 +108,10 @@ class FirestoreServiceImpl extends FirestoreService {
           .collection('users')
           .doc(uid)
           .set({'cafeId': cafeDetails.id}, SetOptions(merge: true));
+    } on FirebaseException catch (_) {
+      rethrow;
     } catch (e) {
-      print(e);
+      rethrow;
     }
   }
 
@@ -121,8 +125,10 @@ class FirestoreServiceImpl extends FirestoreService {
           .collection('cafes')
           .doc(cafeDetails.id)
           .set(updatedCafeDetails.toJson(), SetOptions(merge: true));
+    } on FirebaseException catch (_) {
+      rethrow;
     } catch (e) {
-      print(e);
+      rethrow;
     }
   }
 
@@ -138,8 +144,9 @@ class FirestoreServiceImpl extends FirestoreService {
       } else {
         throw Exception('Cafe not found');
       }
+    } on FirebaseException catch (_) {
+      rethrow;
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -172,6 +179,8 @@ class FirestoreServiceImpl extends FirestoreService {
 
       // Commit all batched writes
       await batch.commit();
+    } on FirebaseException catch (_) {
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -191,7 +200,11 @@ class FirestoreServiceImpl extends FirestoreService {
       } catch (e) {
         rethrow;
       }
-    } catch (e) {}
+    } on FirebaseException catch (_) {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
@@ -211,8 +224,9 @@ class FirestoreServiceImpl extends FirestoreService {
       } else {
         return null;
       }
+    } on FirebaseException catch (_) {
+      rethrow;
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -233,8 +247,9 @@ class FirestoreServiceImpl extends FirestoreService {
       return querySnapshot.docs.map((doc) {
         return Booking.fromJson(doc.data() as Map<String, dynamic>);
       }).toList();
+    } on FirebaseException catch (_) {
+      rethrow;
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -258,8 +273,7 @@ class FirestoreServiceImpl extends FirestoreService {
             Console.fromJson(consoleDoc.data() as Map<String, dynamic>);
 
         // Fetch bookings for the console on the same date as startTime
-        String bookingDate =
-            startTime.toDate().toIso8601String().split('T')[0];
+        String bookingDate = startTime.toDate().toIso8601String().split('T')[0];
         List<Booking> bookings =
             await getBookings(cafeId, console.consoleId, bookingDate);
 
@@ -275,8 +289,9 @@ class FirestoreServiceImpl extends FirestoreService {
       }
 
       return null; // No available console found
+    } on FirebaseException catch (_) {
+      rethrow;
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -304,8 +319,7 @@ class FirestoreServiceImpl extends FirestoreService {
       // Prepare booking document
       String bookingId =
           'booking_${cafeId}_${availableConsole.consoleId}_${startTime.toDate().toIso8601String()}';
-      String bookingDate =
-          startTime.toDate().toIso8601String().split('T')[0];
+      String bookingDate = startTime.toDate().toIso8601String().split('T')[0];
 
       // Calculate the cost of booking
       double hourlyCost = availableConsole.cost;
@@ -341,8 +355,9 @@ class FirestoreServiceImpl extends FirestoreService {
       await bookingRef.set(newBooking.toJson());
 
       return newBooking; // Booking successfully created
+    } on FirebaseException catch (_) {
+      rethrow;
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -382,8 +397,9 @@ class FirestoreServiceImpl extends FirestoreService {
       }
 
       return bookings;
+    } on FirebaseException catch (_) {
+      rethrow;
     } catch (e) {
-      print('Error fetching bookings: $e');
       rethrow;
     }
   }
