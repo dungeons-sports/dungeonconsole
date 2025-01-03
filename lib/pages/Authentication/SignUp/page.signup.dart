@@ -14,13 +14,8 @@ class SignupPage extends StatelessWidget {
   const SignupPage({super.key, required this.isPartner});
 
   void navigate(BuildContext context, AppUser user) {
-    if (isPartner) {
-      GoRouter.of(context)
-          .pushReplacement(AppRoutes.partnerWithUs.path, extra: user);
-    } else {
-      GoRouter.of(context)
-          .pushReplacement(AppRoutes.dashboardPage.path, extra: user);
-    }
+    GoRouter.of(context)
+        .pushReplacement(AppRoutes.partnerWithUs.path, extra: user);
   }
 
   @override
@@ -132,12 +127,12 @@ class SignupPage extends StatelessWidget {
                               BorderedTextField(
                                   hintText: 'Email ID',
                                   controller: vm.emailController),
-                              if (vm.isPasswordValid) ...[
+                              if (!vm.isEmailValid) ...[
                                 const SizedBox(
                                   height: 8.0,
                                 ),
                                 Text(
-                                  vm.passwordErrorMessage,
+                                  vm.emailErrorMessage,
                                   style: GoogleFonts.roboto(color: Colors.red),
                                 )
                               ],
@@ -156,7 +151,7 @@ class SignupPage extends StatelessWidget {
                                   hintText: 'Password',
                                   isObscured: true,
                                   controller: vm.passwordController),
-                              if (vm.isPasswordValid) ...[
+                              if (!vm.isPasswordValid) ...[
                                 const SizedBox(
                                   height: 8.0,
                                 ),

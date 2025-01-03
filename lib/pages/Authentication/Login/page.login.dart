@@ -152,11 +152,17 @@ class LoginPage extends StatelessWidget {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  vm.loginWithEmail().then((isCafe) {
-                                    if (isCafe != null && isCafe) {
-                                      GoRouter.of(context).pushReplacement(
-                                          AppRoutes.dashboardPage.path);
-                                    } else {}
+                                  vm.loginWithEmail().then((appuser) {
+                                    if (appuser != null) {
+                                      if (appuser.isCafe &&
+                                          appuser.cafeId == "TBD") {
+                                        GoRouter.of(context).pushReplacement(
+                                            AppRoutes.partnerWithUs.path);
+                                      } else if (appuser.isCafe) {
+                                        GoRouter.of(context).pushReplacement(
+                                            AppRoutes.dashboardPage.path);
+                                      }
+                                    }
                                   });
                                 },
                                 child: StackedContainer(

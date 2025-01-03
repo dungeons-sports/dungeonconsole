@@ -41,12 +41,12 @@ class VMSignup extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool? validate(String email, String password) {
+  bool validate(String email, String password) {
     if (email.isEmpty) {
       _emailErrorMessage = "Cannot be empty";
       _isEmailValid = false;
       notifyListeners();
-      return null;
+      return false;
     } else {
       _isEmailValid = true;
       notifyListeners();
@@ -58,7 +58,7 @@ class VMSignup extends ChangeNotifier {
       _emailErrorMessage = "Invalid email format";
       _isEmailValid = false;
       notifyListeners();
-      return null;
+      return false;
     } else {
       _isEmailValid = true;
       notifyListeners();
@@ -68,7 +68,7 @@ class VMSignup extends ChangeNotifier {
       _passwordErrorMessage = "Cannot be empty";
       _isPasswordValid = false;
       notifyListeners();
-      return null;
+      return false;
     } else {
       _isPasswordValid = true;
       notifyListeners();
@@ -89,9 +89,9 @@ class VMSignup extends ChangeNotifier {
       final String email = _emailController.text;
       final String password = _passwordController.text;
 
-      bool? isValid = validate(email, password);
+      bool isValid = validate(email, password);
 
-      if (isValid != null && !isValid) {
+      if (isValid) {
         final authService = locator.get<AuthenticationService>();
         AppUser? appuser = await authService.signUpWithEmailPassword(
             email, password, isPartner);

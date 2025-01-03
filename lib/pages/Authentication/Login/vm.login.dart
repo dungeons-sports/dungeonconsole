@@ -75,7 +75,7 @@ class VMLogin extends ChangeNotifier {
     return true;
   }
 
-  Future<bool?> loginWithEmail() async {
+  Future<AppUser?> loginWithEmail() async {
     final AuthenticationService authService =
         locator.get<AuthenticationService>();
     final String email = _emailController.text;
@@ -87,18 +87,18 @@ class VMLogin extends ChangeNotifier {
         AppUser? appUser =
             await authService.loginWithEmailPassword(email, password);
         if (appUser != null) {
-          return appUser.isCafe;
+          return appUser;
         }
 
-        return false;
+        return null;
       }
-      return false;
+      return null;
     } on FirebaseAuthException catch (e) {
       _onLoginError = true;
       _loginErrorMessage = e.message!;
       _isLoading = false;
       notifyListeners();
-      return false;
+      return null;
     }
   }
 
