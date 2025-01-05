@@ -2,11 +2,13 @@ import 'package:dungeonconsole/models/modelConsole/model.console.dart';
 import 'package:flutter/material.dart';
 
 class CategotyTabWidget extends StatefulWidget {
+  final ConsoleCategory? preSelected;
   final List<ConsoleCategory> availableCategories;
   final Function(int) onChanged;
   const CategotyTabWidget(
       {super.key,
       required this.onChanged,
+      this.preSelected,
       this.availableCategories = const [...ConsoleCategory.values]});
 
   @override
@@ -15,6 +17,35 @@ class CategotyTabWidget extends StatefulWidget {
 
 class _CategotyTabWidgetState extends State<CategotyTabWidget> {
   int selectedIndex = 0;
+
+  @override
+  initState() {
+    if (widget.preSelected != null) {
+      switch(widget.preSelected){
+        case null:
+          break;
+        case ConsoleCategory.pc:
+          selectedIndex = 0;
+          break;
+        case ConsoleCategory.ps:
+          selectedIndex = 1;
+          break;
+        case ConsoleCategory.vr:
+          selectedIndex = 3;
+          break;
+        case ConsoleCategory.xbox:
+          selectedIndex = 2;
+          break;
+        case ConsoleCategory.streaming:
+          selectedIndex = 4;
+          break;
+        case ConsoleCategory.simRacing:
+          selectedIndex = 5;
+          break;          
+      }
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'package:dungeonconsole/helpers/helper.navigationRoutes.dart';
 import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabCreateBooking/tab.createBooking.dart';
+import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabFlowBooking/tab.sessionManager.dart';
 import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabSettings/tab.settings.dart';
 import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabUpcomingBooking/tab.upcomingBookings.dart';
 import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabViewAllBooking/tab.viewAllBooking.dart';
@@ -47,6 +48,13 @@ class DashboardPage extends StatelessWidget {
                         .pushReplacement(AppRoutes.loginPage.path);
                   }
                 });
+
+                if(vm.isLoading){
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                }
+
                 return Scaffold(
                   appBar: AppBar(
                     title: Row(
@@ -90,9 +98,9 @@ class DashboardPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ListTile(
-                                title: const Text("Create booking"),
+                                title: const Text("Time manager"),
                                 subtitle: const Text(
-                                  "Create booking for offline customers",
+                                  "Start and stop time for the console",
                                 ),
                                 contentPadding: const EdgeInsets.all(0.0),
                                 onTap: () {
@@ -100,13 +108,24 @@ class DashboardPage extends StatelessWidget {
                                 },
                               ),
                               ListTile(
+                                title: const Text("Create booking"),
+                                subtitle: const Text(
+                                  "Create booking for offline customers",
+                                ),
+                                contentPadding: const EdgeInsets.all(0.0),
+                                onTap: () {
+                                  vm.currentTab = 1;
+                                },
+                              ),
+                              
+                              ListTile(
                                 title: const Text("Upcoming Booking"),
                                 subtitle: const Text(
                                   "View curated bookings for today",
                                 ),
                                 contentPadding: const EdgeInsets.all(0.0),
                                 onTap: () {
-                                  vm.currentTab = 1;
+                                  vm.currentTab = 2;
                                 },
                               ),
                               ListTile(
@@ -116,7 +135,7 @@ class DashboardPage extends StatelessWidget {
                                 ),
                                 contentPadding: const EdgeInsets.all(0.0),
                                 onTap: () {
-                                  vm.currentTab = 2;
+                                  vm.currentTab = 3;
                                 },
                               ),
                               // ListTile(
@@ -138,7 +157,7 @@ class DashboardPage extends StatelessWidget {
                                 ),
                                 contentPadding: const EdgeInsets.all(0.0),
                                 onTap: () {
-                                  vm.currentTab = 3;
+                                  vm.currentTab = 4;
                                 },
                               ),
                               ListTile(
@@ -163,21 +182,26 @@ class DashboardPage extends StatelessWidget {
                       ),
                       if (vm.currentTab == 0)
                         Expanded(
-                            child: CreateBookingTab(
+                            child: SessionManagerTab(
                           dashvm: vm,
                         )),
                       if (vm.currentTab == 1)
+                        Expanded(
+                            child: CreateBookingTab(
+                          dashvm: vm,
+                        )),
+                      if (vm.currentTab == 2)
                         Expanded(
                           child: UpcomingBookingTab(
                             vmdash: vm,
                           ),
                         ),
-                      if (vm.currentTab == 2)
+                      if (vm.currentTab == 3)
                         Expanded(
                             child: ViewAllBookingTab(
                           vmdash: vm,
                         )),
-                      if (vm.currentTab == 3)
+                      if (vm.currentTab == 4)
                         Expanded(
                             child: SettingsTab(
                           dashvm: vm,

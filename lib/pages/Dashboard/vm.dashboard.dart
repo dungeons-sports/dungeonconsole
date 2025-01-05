@@ -7,6 +7,9 @@ import 'package:dungeonconsole/services/service.firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class VMDashboard extends ChangeNotifier {
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   int _currentTab = 0;
   int get currentTab => _currentTab;
 
@@ -23,25 +26,37 @@ class VMDashboard extends ChangeNotifier {
   }
 
   Future<bool> fetchCafeDetails() async {
-    if(appUser!= null){
+    if (_isLoading) {
+      return false;
+    }
+    if (appUser != null) {
       return true;
     }
     try {
+      _isLoading = true;
+      notifyListeners();
       // get the AppUser from authentication service
-      appUser =
-          await locator.get<AuthenticationService>().getCurrentUser();
+      appUser = await locator.get<AuthenticationService>().getCurrentUser();
 
-      if (appUser != null && appUser!.isCafe && (appUser!.cafeId != null || appUser!.cafeId != "")) {
+      if (appUser != null &&
+          appUser!.isCafe &&
+          (appUser!.cafeId != null || appUser!.cafeId != "")) {
         // Fetch the Cafe details
-        cafeDetails = await locator.get<FirestoreService>().getCafeRecord(appUser!.cafeId!);
-        listedConsoles = await locator.get<FirestoreService>().getListedConsoles(appUser!.cafeId!)??[];
+        cafeDetails = await locator
+            .get<FirestoreService>()
+            .getCafeRecord(appUser!.cafeId!);
+        listedConsoles = await locator
+                .get<FirestoreService>()
+                .getListedConsoles(appUser!.cafeId!) ??
+            [];
         for (Console console in listedConsoles) {
           if (!availableCategories.contains(console.type)) {
             availableCategories.add(console.type);
           }
         }
+        _isLoading = false;
         notifyListeners();
-        return true;  
+        return true;
       }
 
       return false;
