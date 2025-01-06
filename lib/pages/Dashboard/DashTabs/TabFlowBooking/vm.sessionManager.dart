@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dungeonconsole/main.dart';
 import 'package:dungeonconsole/models/modelConsole/model.console.dart';
 import 'package:dungeonconsole/services/service.firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class VMSessionManager extends ChangeNotifier {
@@ -29,8 +30,27 @@ class VMSessionManager extends ChangeNotifier {
     return _timers[consoleId] != null;
   }
 
-  void setSelectedCategory(ConsoleCategory category) {
-    _selectedCategory = category;
+  void setSelectedCategory(int index) {
+    switch(index){
+        case 0:
+          _selectedCategory = ConsoleCategory.pc;
+          break;
+        case 1:
+           _selectedCategory = ConsoleCategory.ps;
+          break;        
+        case 2:
+           _selectedCategory = ConsoleCategory.xbox;
+          break;
+          case 3:
+           _selectedCategory = ConsoleCategory.vr;
+          break;
+        case 4:
+          _selectedCategory = ConsoleCategory.streaming;
+          break;
+        case 5:
+           _selectedCategory = ConsoleCategory.simRacing;
+          break;          
+      }
     notifyListeners();
   }
 

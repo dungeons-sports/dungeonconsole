@@ -29,12 +29,12 @@ class _CategotyTabWidgetState extends State<CategotyTabWidget> {
           break;
         case ConsoleCategory.ps:
           selectedIndex = 1;
-          break;
-        case ConsoleCategory.vr:
-          selectedIndex = 3;
-          break;
+          break;        
         case ConsoleCategory.xbox:
           selectedIndex = 2;
+          break;
+          case ConsoleCategory.vr:
+          selectedIndex = 3;
           break;
         case ConsoleCategory.streaming:
           selectedIndex = 4;

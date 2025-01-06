@@ -1,4 +1,3 @@
-import 'package:dungeonconsole/models/modelConsole/model.console.dart';
 import 'package:dungeonconsole/pages/Dashboard/DashTabs/TabFlowBooking/vm.sessionManager.dart';
 import 'package:dungeonconsole/pages/Dashboard/vm.dashboard.dart';
 import 'package:dungeonconsole/widgets/widget.categoryTabs.dart';
@@ -85,150 +84,153 @@ class SessionManagerTab extends StatelessWidget {
                 preSelected: vm.selectedCategory,
                 availableCategories: dashvm.availableCategories,
                 onChanged: (index) {
-                  vm.setSelectedCategory(ConsoleCategory.values[index]);
+                  vm.setSelectedCategory(index);
                 },
               ),
               const SizedBox(height: 24.0),
-              LayoutBuilder(
-                builder: (builder, constraints) {
-                  final columnWidth = constraints.maxWidth / 5;
-
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                      columnSpacing: 0,
-                      columns: [
-                        DataColumn(
-                          label: SizedBox(
-                            width: columnWidth,
-                            child: Text(
-                              'Console ID',
-                              style: GoogleFonts.roboto(fontSize: 16.0),
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: SizedBox(
-                            width: columnWidth,
-                            child: Text(
-                              'Progress Time',
-                              style: GoogleFonts.roboto(fontSize: 16.0),
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: SizedBox(
-                            width: columnWidth,
-                            child: Text(
-                              'Start',
-                              style: GoogleFonts.roboto(fontSize: 16.0),
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: SizedBox(
-                            width: columnWidth,
-                            child: Text(
-                              'Stop',
-                              style: GoogleFonts.roboto(fontSize: 16.0),
-                            ),
-                          ),
-                        ),
-                      ],
-                      rows: dashvm.listedConsoles.map((console) {
-                        final progressTime =
-                            vm.getProgressTime(console.consoleId);
-
-                        return DataRow(
-                          cells: [
-                            DataCell(
-                              SizedBox(
-                                width: columnWidth,
-                                child: Text(console.name.toUpperCase()),
+              SizedBox(
+                height: size.height * 0.6,
+                child: SingleChildScrollView(
+                  child: LayoutBuilder(
+                    builder: (builder, constraints) {
+                      final columnWidth = constraints.maxWidth / 5;
+                  
+                      return DataTable(
+                        columnSpacing: 0,
+                        columns: [
+                          DataColumn(
+                            label: SizedBox(
+                              width: columnWidth,
+                              child: Text(
+                                'Console ID',
+                                style: GoogleFonts.roboto(fontSize: 16.0),
                               ),
                             ),
-                            DataCell(
-                              SizedBox(
-                                width: columnWidth,
-                                child: Text(
-                                  "${progressTime.inHours}:${(progressTime.inMinutes % 60).toString().padLeft(2, '0')}:${(progressTime.inSeconds % 60).toString().padLeft(2, '0')}",
+                          ),
+                          DataColumn(
+                            label: SizedBox(
+                              width: columnWidth,
+                              child: Text(
+                                'Progress Time',
+                                style: GoogleFonts.roboto(fontSize: 16.0),
+                              ),
+                            ),
+                          ),
+                          DataColumn(
+                            label: SizedBox(
+                              width: columnWidth,
+                              child: Text(
+                                'Start',
+                                style: GoogleFonts.roboto(fontSize: 16.0),
+                              ),
+                            ),
+                          ),
+                          DataColumn(
+                            label: SizedBox(
+                              width: columnWidth,
+                              child: Text(
+                                'Stop',
+                                style: GoogleFonts.roboto(fontSize: 16.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                        rows: dashvm.listedConsoles.where((element) => element.type == vm.selectedCategory).map((console) {
+                          final progressTime =
+                              vm.getProgressTime(console.consoleId);
+                      
+                          return DataRow(
+                            cells: [
+                              DataCell(
+                                SizedBox(
+                                  width: columnWidth,
+                                  child: Text(console.name.toUpperCase()),
                                 ),
                               ),
-                            ),
-                            DataCell(
-                              SizedBox(
+                              DataCell(
+                                SizedBox(
                                   width: columnWidth,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: InkWell(
-                                        onTap: () {
-                                          if (!vm.checkCosoleStatus(
-                                              console.consoleId)) {
-                                            vm.startTimer(console.consoleId);
-                                          }
-                                        },
-                                        child: Container(
-                                          height: 60,
-                                          width: 100,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            border: !(vm.checkCosoleStatus(
-                                                    console.consoleId))
-                                                ? Border.all(
-                                                    color: Colors.green)
-                                                : Border.all(
-                                                    color: Colors.grey),
-                                          ),
-                                          child: Text(
-                                            "START",
-                                            style: TextStyle(
-                                                color: !(vm.checkCosoleStatus(
-                                                        console.consoleId))
-                                                    ? Colors.green
-                                                    : Colors.grey),
+                                  child: Text(
+                                    "${progressTime.inHours}:${(progressTime.inMinutes % 60).toString().padLeft(2, '0')}:${(progressTime.inSeconds % 60).toString().padLeft(2, '0')}",
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SizedBox(
+                                    width: columnWidth,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            if (!vm.checkCosoleStatus(
+                                                console.consoleId)) {
+                                              vm.startTimer(console.consoleId);
+                                            }
+                                          },
+                                          child: Container(
+                                            height: 60,
+                                            width: 100,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              border: !(vm.checkCosoleStatus(
+                                                      console.consoleId))
+                                                  ? Border.all(
+                                                      color: Colors.green)
+                                                  : Border.all(
+                                                      color: Colors.grey),
+                                            ),
+                                            child: Text(
+                                              "START",
+                                              style: TextStyle(
+                                                  color: !(vm.checkCosoleStatus(
+                                                          console.consoleId))
+                                                      ? Colors.green
+                                                      : Colors.grey),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  )),
-                            ),
-                            DataCell(
-                              SizedBox(
-                                  width: columnWidth,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: InkWell(
-                                        onTap: () {
-                                          vm.stopTimer(console.consoleId);
-                                        },
-                                        child: Container(
-                                          height: 60,
-                                          width: 100,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            border:
-                                                Border.all(color: Colors.red),
-                                          ),
-                                          child: const Text(
-                                            "STOP",
-                                            style: TextStyle(color: Colors.red),
+                                    )),
+                              ),
+                              DataCell(
+                                SizedBox(
+                                    width: columnWidth,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            vm.stopTimer(console.consoleId);
+                                          },
+                                          child: Container(
+                                            height: 60,
+                                            width: 100,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              border:
+                                                  Border.all(color: Colors.red),
+                                            ),
+                                            child: const Text(
+                                              "STOP",
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  )),
-                            ),
-                          ],
-                        );
-                      }).toList(),
-                    ),
-                  );
-                },
-              )
+                                    )),
+                              ),
+                            ],
+                          );
+                        }).toList(),
+                      );
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         );
