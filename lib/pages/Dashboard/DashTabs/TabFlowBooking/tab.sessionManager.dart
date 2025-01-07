@@ -50,7 +50,9 @@ class SessionManagerTab extends StatelessWidget {
                   ],
                 );
               },
-            );
+            ).then((_){
+              vm.clearDialog();
+            });
           });
         }
 
