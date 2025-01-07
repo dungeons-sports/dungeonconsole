@@ -1,4 +1,5 @@
 # Keep branch-specific Firebase configuration files
+.firebaserc merge=ours
 firebase.json merge=ours
 lib/firebase_options.dart merge=ours
 
