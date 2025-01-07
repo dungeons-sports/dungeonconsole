@@ -4,13 +4,9 @@ import 'package:dungeonconsole/services/service.firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthenticationService {
-  Future<AppUser?> signUpWithEmailPassword(
-    String email,
-    String password,
-    bool isPartner,
-  );
+  Future<AppUser?> signUpWithEmailPassword(String email, String password);
   Future<AppUser?> loginWithEmailPassword(String email, String password);
-  Future<AppUser?> signUpWithGoogle(bool isPartner);
+  Future<AppUser?> signUpWithGoogle();
   Future<AppUser?> loginWithGoogle();
   Future<void> logout();
   Future<AppUser?> getCurrentUser();
@@ -19,7 +15,7 @@ abstract class AuthenticationService {
 class AuthenticationServiceImpl extends AuthenticationService {
   @override
   Future<AppUser?> signUpWithEmailPassword(
-      String email, String password, bool isPartner) async {
+      String email, String password) async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     try {
       UserCredential userCredential =
@@ -28,9 +24,10 @@ class AuthenticationServiceImpl extends AuthenticationService {
         password: password,
       );
       AppUser? appUser = await locator.get<FirestoreService>().createUserRecord(
-          userCredential.user!,
-          isCafe: isPartner,
-          isPlayer: !isPartner);
+            userCredential.user!,
+            isCafe: true,
+            isPlayer: false,
+          );
       return appUser;
     } catch (e) {
       rethrow;
@@ -56,15 +53,18 @@ class AuthenticationServiceImpl extends AuthenticationService {
   }
 
   @override
-  Future<AppUser?> signUpWithGoogle(bool isPartner) async {
+  Future<AppUser?> signUpWithGoogle() async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     try {
       final userCredential =
           await firebaseAuth.signInWithPopup(GoogleAuthProvider());
       final User user = userCredential.user!;
-      final AppUser? appuser = await locator
-          .get<FirestoreService>()
-          .createUserRecord(user, isCafe: isPartner, isPlayer: !isPartner);
+      final AppUser? appuser =
+          await locator.get<FirestoreService>().createUserRecord(
+                user,
+                isCafe: true,
+                isPlayer: false,
+              );
       return appuser;
     } catch (e) {
       rethrow;
@@ -109,7 +109,7 @@ class AuthenticationServiceImpl extends AuthenticationService {
       }
     } on FirebaseException catch (_) {
       rethrow;
-    } catch (e){
+    } catch (e) {
       rethrow;
     }
   }

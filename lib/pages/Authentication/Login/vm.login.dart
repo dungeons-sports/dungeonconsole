@@ -102,7 +102,7 @@ class VMLogin extends ChangeNotifier {
     }
   }
 
-  Future<bool?> signUpWithGoogle(bool isPartner) async {
+  Future<AppUser?> signUpWithGoogle() async {
     if (_isLoading) {
       return null;
     }
@@ -113,22 +113,22 @@ class VMLogin extends ChangeNotifier {
       notifyListeners();
 
       final authService = locator.get<AuthenticationService>();
-      AppUser? appUser = await authService.signUpWithGoogle(isPartner);
+      AppUser? appUser = await authService.signUpWithGoogle();
 
       if (appUser != null) {
-        return appUser.isCafe;
+        return appUser;
       }
 
       _isLoading = false;
       notifyListeners();
 
-      return false;
+      return null;
     } on FirebaseAuthException catch (e) {
       _onLoginError = true;
       _loginErrorMessage = e.code;
       _isLoading = false;
       notifyListeners();
-      return false;
+      return null;
     }
   }
 

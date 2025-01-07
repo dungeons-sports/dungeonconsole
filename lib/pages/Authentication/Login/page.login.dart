@@ -154,14 +154,14 @@ class LoginPage extends StatelessWidget {
                                 onTap: () {
                                   vm.loginWithEmail().then((appuser) {
                                     if (appuser != null) {
-                                      if (appuser.isCafe &&
-                                          appuser.cafeId == "TBD") {
+                                      if (appuser.cafeId == "TBD") {
                                         GoRouter.of(context).pushReplacement(
                                             AppRoutes.partnerWithUs.path);
-                                      } else if (appuser.isCafe) {
-                                        GoRouter.of(context).pushReplacement(
-                                            AppRoutes.dashboardPage.path);
+                                        return;
                                       }
+
+                                      GoRouter.of(context).pushReplacement(
+                                          AppRoutes.dashboardPage.path);
                                     }
                                   });
                                 },
@@ -207,11 +207,17 @@ class LoginPage extends StatelessWidget {
                           const SizedBox(height: 12.0),
                           InkWell(
                             onTap: () {
-                              vm.signUpWithGoogle(false).then((isCafe) {
-                                if (isCafe != null && isCafe) {
+                              vm.signUpWithGoogle().then((appuser) {
+                                if (appuser != null) {
+                                  if (appuser.cafeId == "TBD") {
+                                    GoRouter.of(context).pushReplacement(
+                                        AppRoutes.partnerWithUs.path);
+                                    return;
+                                  }
+
                                   GoRouter.of(context).pushReplacement(
                                       AppRoutes.dashboardPage.path);
-                                } else {}
+                                }
                               });
                             },
                             child: StackedContainer(

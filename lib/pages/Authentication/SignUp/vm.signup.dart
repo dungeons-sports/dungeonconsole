@@ -94,7 +94,7 @@ class VMSignup extends ChangeNotifier {
       if (isValid) {
         final authService = locator.get<AuthenticationService>();
         AppUser? appuser = await authService.signUpWithEmailPassword(
-            email, password, isPartner);
+            email, password);
 
         _isLoading = false;
         notifyListeners();
@@ -113,7 +113,7 @@ class VMSignup extends ChangeNotifier {
     }
   }
 
-  Future<AppUser?> signUpWithGoogle(bool isPartner) async {
+  Future<AppUser?> signUpWithGoogle() async {
     if (_isLoading) {
       return null;
     }
@@ -123,7 +123,7 @@ class VMSignup extends ChangeNotifier {
       notifyListeners();
 
       final authService = locator.get<AuthenticationService>();
-      AppUser? appUser = await authService.signUpWithGoogle(isPartner);
+      AppUser? appUser = await authService.signUpWithGoogle();
 
       _isLoading = false;
       notifyListeners();

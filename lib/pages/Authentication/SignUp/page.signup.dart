@@ -229,7 +229,7 @@ class SignupPage extends StatelessWidget {
                               const SizedBox(height: 12.0),
                               InkWell(
                                 onTap: () {
-                                  vm.signUpWithGoogle(true).then((appUser) {
+                                  vm.signUpWithGoogle().then((appUser) {
                                     if (appUser == null) {
                                       return;
                                     }
