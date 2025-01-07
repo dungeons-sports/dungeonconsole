@@ -3,12 +3,13 @@
     "default": "dev-dungeon-c98c8"
   },
   "targets": {
-    "dungeon-4a60f": {
+    "dev-dungeon-c98c8": {
       "hosting": {
         "console": [
           "dev-console-dungeon"
         ]
       }
     }
-  }
+  },
+  "etags": {}
 }
