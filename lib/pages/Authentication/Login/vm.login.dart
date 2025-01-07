@@ -113,7 +113,7 @@ class VMLogin extends ChangeNotifier {
       notifyListeners();
 
       final authService = locator.get<AuthenticationService>();
-      AppUser? appUser = await authService.signUpWithGoogle();
+      AppUser? appUser = await authService.loginWithGoogle();
 
       if (appUser != null) {
         return appUser;

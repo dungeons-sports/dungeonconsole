@@ -7,7 +7,7 @@ import 'package:dungeonconsole/services/service.firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class VMDashboard extends ChangeNotifier {
-  bool _isLoading = false;
+  bool _isLoading = true;
   bool get isLoading => _isLoading;
 
   int _currentTab = 0;
@@ -25,10 +25,7 @@ class VMDashboard extends ChangeNotifier {
     }
   }
 
-  Future<bool> fetchCafeDetails() async {
-    if (_isLoading) {
-      return false;
-    }
+  Future<bool> fetchCafeDetails() async { 
     if (appUser != null) {
       return true;
     }

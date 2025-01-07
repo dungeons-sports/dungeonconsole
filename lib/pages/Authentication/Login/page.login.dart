@@ -199,53 +199,53 @@ class LoginPage extends StatelessWidget {
                           const SizedBox(
                             height: 32.0,
                           ),
-                          Text(
-                            "Or you can use Google",
-                            style: GoogleFonts.roboto(
-                                fontSize: 18.0, color: Colors.white),
-                          ),
-                          const SizedBox(height: 12.0),
-                          InkWell(
-                            onTap: () {
-                              vm.signUpWithGoogle().then((appuser) {
-                                if (appuser != null) {
-                                  if (appuser.cafeId == "TBD") {
-                                    GoRouter.of(context).pushReplacement(
-                                        AppRoutes.partnerWithUs.path);
-                                    return;
-                                  }
+                          // Text(
+                          //   "Or you can use Google",
+                          //   style: GoogleFonts.roboto(
+                          //       fontSize: 18.0, color: Colors.white),
+                          // ),
+                          // const SizedBox(height: 12.0),
+                          // InkWell(
+                          //   onTap: () {
+                          //     vm.signUpWithGoogle().then((appuser) {
+                          //       if (appuser != null) {
+                          //         if (appuser.cafeId == "TBD") {
+                          //           GoRouter.of(context).pushReplacement(
+                          //               AppRoutes.partnerWithUs.path);
+                          //           return;
+                          //         }
 
-                                  GoRouter.of(context).pushReplacement(
-                                      AppRoutes.dashboardPage.path);
-                                }
-                              });
-                            },
-                            child: StackedContainer(
-                              height: 48.0,
-                              width: 220.0,
-                              containerSpacing: 4.0,
-                              fillColor: Colors.black,
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'assets/icons/google_icon.png',
-                                      width: 30.0,
-                                    ),
-                                    const SizedBox(
-                                      width: 12.0,
-                                    ),
-                                    Text(
-                                      "Google Login",
-                                      style: GoogleFonts.roboto(
-                                          fontSize: 18.0, color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
+                          //         GoRouter.of(context).pushReplacement(
+                          //             AppRoutes.dashboardPage.path);
+                          //       }
+                          //     });
+                          //   },
+                          //   child: StackedContainer(
+                          //     height: 48.0,
+                          //     width: 220.0,
+                          //     containerSpacing: 4.0,
+                          //     fillColor: Colors.black,
+                          //     child: Center(
+                          //       child: Row(
+                          //         mainAxisAlignment: MainAxisAlignment.center,
+                          //         children: [
+                          //           Image.asset(
+                          //             'assets/icons/google_icon.png',
+                          //             width: 30.0,
+                          //           ),
+                          //           const SizedBox(
+                          //             width: 12.0,
+                          //           ),
+                          //           Text(
+                          //             "Google Login",
+                          //             style: GoogleFonts.roboto(
+                          //                 fontSize: 18.0, color: Colors.white),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //   ),
+                          // )
                         ],
                       );
                     })),

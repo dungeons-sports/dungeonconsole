@@ -42,14 +42,16 @@ class DashboardPage extends StatelessWidget {
                     )),
               )
             : Consumer<VMDashboard>(builder: (context, vm, detail) {
-                vm.fetchCafeDetails().then((success) {
-                  if (!success) {
-                    GoRouter.of(context)
-                        .pushReplacement(AppRoutes.loginPage.path);
-                  }
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  vm.fetchCafeDetails().then((success) {
+                    if (!success) {
+                      GoRouter.of(context)
+                          .pushReplacement(AppRoutes.loginPage.path);
+                    }
+                  });
                 });
 
-                if(vm.isLoading){
+                if (vm.isLoading) {
                   return const Center(
                     child: CircularProgressIndicator.adaptive(),
                   );
@@ -117,7 +119,7 @@ class DashboardPage extends StatelessWidget {
                                   vm.currentTab = 1;
                                 },
                               ),
-                              
+
                               ListTile(
                                 title: const Text("Upcoming Booking"),
                                 subtitle: const Text(
@@ -149,7 +151,7 @@ class DashboardPage extends StatelessWidget {
                               //   },
                               // ),
                               const Spacer(),
-                              
+
                               ListTile(
                                 title: const Text("Settings"),
                                 subtitle: const Text(
@@ -167,9 +169,9 @@ class DashboardPage extends StatelessWidget {
                                 ),
                                 contentPadding: const EdgeInsets.all(0.0),
                                 onTap: () {
-                                  vm.signOut().then((val){
+                                  vm.signOut().then((val) {
                                     final router = GoRouter.of(context);
-                                    while (router.canPop()){
+                                    while (router.canPop()) {
                                       router.pop();
                                     }
                                     router.replace(AppRoutes.loginPage.path);
