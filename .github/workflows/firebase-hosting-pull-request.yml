@@ -35,8 +35,7 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DUNGEON_4A60F }}
-          channelId: live
-          projectId: dungeon-4a60f
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV_DUNGEON_C98C8 }}
+          projectId: dev-dungeon-c98c8
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks

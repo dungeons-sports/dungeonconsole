@@ -21,9 +21,9 @@
     "platforms": {
       "dart": {
         "lib/firebase_options.dart": {
-          "projectId": "dungeon-4a60f",
+          "projectId": "dev-dungeon-c98c8",
           "configurations": {
-            "web": "1:473940145936:web:47191603cda85a04ba1795"
+            "web": "1:799971635638:web:7da99b62024eb147e71117"
           }
         }
       }

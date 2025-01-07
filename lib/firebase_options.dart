@@ -53,11 +53,12 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA73HwrnhbGXuxP5OygUNpnaJ9KwdeStHo',
-    appId: '1:473940145936:web:47191603cda85a04ba1795',
-    messagingSenderId: '473940145936',
-    projectId: 'dungeon-4a60f',
-    authDomain: 'dungeon-4a60f.firebaseapp.com',
-    storageBucket: 'dungeon-4a60f.firebasestorage.app',
+    apiKey: 'AIzaSyAEb3XJ7Pu4IheP1WfIrznRhcsOzyhVzNc',
+    appId: '1:799971635638:web:7da99b62024eb147e71117',
+    messagingSenderId: '799971635638',
+    projectId: 'dev-dungeon-c98c8',
+    authDomain: 'dev-dungeon-c98c8.firebaseapp.com',
+    storageBucket: 'dev-dungeon-c98c8.firebasestorage.app',
   );
+
 }
